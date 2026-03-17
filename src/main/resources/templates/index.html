@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BMW Parts Catalog</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+</head>
+<body class="page-home">
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="brand" href="/">
+      <span class="brand-logo">BMW</span>
+      <span class="brand-sub">Parts Catalog</span>
+    </a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">NHTSA VIN DECODER</div>
+    <h1 class="hero-title">
+      <span>Find Your BMW</span>
+      <span class="hero-title-accent">Genuine Parts</span>
+    </h1>
+    <p class="hero-subtitle">
+      Enter your VIN number to identify your exact BMW model and browse
+      the complete OEM parts catalog with Bulgarian supplier pricing.
+    </p>
+
+    <div th:if="${error}" class="alert-error">
+      <span class="alert-icon">⚠</span>
+      <span th:text="${error}"></span>
+    </div>
+
+    <form class="vin-form" action="/decode" method="POST" id="vinForm">
+      <div class="vin-input-wrap">
+        <label class="vin-label">Vehicle Identification Number (VIN)</label>
+        <div class="vin-row">
+          <input
+                  type="text"
+                  name="vin"
+                  id="vinInput"
+                  class="vin-input"
+                  placeholder="e.g. WBA8B3C55JK385192"
+                  maxlength="17"
+                  minlength="17"
+                  autocomplete="off"
+                  required
+          />
+          <div class="vin-counter"><span id="vinCount">0</span>/17</div>
+        </div>
+        <div class="vin-segments">
+          <div class="seg" data-tip="World Manufacturer Identifier">WMI</div>
+          <div class="seg-div"></div>
+          <div class="seg" data-tip="Vehicle Descriptor Section">VDS</div>
+          <div class="seg-div"></div>
+          <div class="seg" data-tip="Vehicle Identifier Section">VIS</div>
+        </div>
+      </div>
+      <button type="submit" class="btn-decode" id="decodeBtn">
+        <span class="btn-text">Decode &amp; Browse Parts</span>
+        <span class="btn-arrow">→</span>
+      </button>
+    </form>
+
+    <div class="vin-live" id="vinLive" style="display:none">
+      <div class="live-spinner"></div>
+      <span id="vinLiveText">Checking VIN…</span>
+    </div>
+
+    <div class="vin-samples">
+      <span class="sample-label">Примерен BMW VIN:</span>
+      <button class="sample-btn" onclick="fillVin('WBA8B3C55JK385192')">
+        F30 340i — WBA8B3C55JK385192
+      </button>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="bmw-roundel">
+      <div class="roundel-outer">
+        <div class="roundel-inner">
+          <div class="roundel-q1"></div>
+          <div class="roundel-q2"></div>
+          <div class="roundel-q3"></div>
+          <div class="roundel-q4"></div>
+          <div class="roundel-text">BMW</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item"><div class="stat-num">50,000+</div><div class="stat-lbl">OEM Part Numbers</div></div>
+      <div class="stat-item"><div class="stat-num">14</div><div class="stat-lbl">Системни групи</div></div>
+      <div class="stat-item"><div class="stat-num">15+</div><div class="stat-lbl">Български доставчици</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <div class="feature-item">
+    <div class="feature-icon">🔍</div>
+    <div class="feature-text">
+      <strong>NHTSA VIN Lookup</strong>
+      <span>Официални данни за автомобила</span>
+    </div>
+  </div>
+  <div class="feature-item">
+    <div class="feature-icon">📐</div>
+    <div class="feature-text">
+      <strong>Детайлни диаграми</strong>
+      <span>Номерирани компоненти</span>
+    </div>
+  </div>
+  <div class="feature-item">
+    <div class="feature-icon">🏷️</div>
+    <div class="feature-text">
+      <strong>OE Номера</strong>
+      <span>BMW оригинални референции</span>
+    </div>
+  </div>
+  <div class="feature-item">
+    <div class="feature-icon">🇧🇬</div>
+    <div class="feature-text">
+      <strong>Цени от БГ доставчици</strong>
+      <span>Сравни марки и цени</span>
+    </div>
+  </div>
+</section>
+
+<script th:src="@{/js/main.js}"></script>
+<script>
+  const vinInput = document.getElementById('vinInput');
+  const vinCount = document.getElementById('vinCount');
+  vinInput.addEventListener('input', function () {
+    const v = this.value.toUpperCase().replace(/[^A-HJ-NPR-Z0-9]/g, '');
+    this.value = v;
+    vinCount.textContent = v.length;
+    vinCount.style.color = v.length === 17 ? '#00d4ff' : '#888';
+  });
+  function fillVin(vin) {
+    vinInput.value = vin;
+    vinCount.textContent = 17;
+    vinCount.style.color = '#00d4ff';
+  }
+</script>
+</body>
+</html>

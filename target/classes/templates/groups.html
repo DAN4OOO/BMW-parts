@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Групи части — BMW Parts Catalog</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+</head>
+<body class="page-groups">
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="brand" href="/">
+      <span class="brand-logo">BMW</span>
+      <span class="brand-sub">Parts Catalog</span>
+    </a>
+    <div class="breadcrumb">
+      <a href="/">Начало</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-active">Групи части</span>
+    </div>
+  </div>
+</nav>
+
+<!-- Vehicle Banner -->
+<div class="vehicle-banner" th:if="${vehicle != null and vehicle.valid}">
+  <div class="vb-inner">
+    <div class="vb-roundel">
+      <div class="mini-roundel"></div>
+    </div>
+    <div class="vb-info">
+      <div class="vb-title">
+        <span th:text="${vehicle.year}"></span>
+        <span th:text="${vehicle.make}"></span>
+        <span th:text="${vehicle.model}"></span>
+        <span th:if="${vehicle.series != null}" th:text="'(' + ${vehicle.series} + ')'"></span>
+      </div>
+      <div class="vb-details">
+          <span th:if="${vehicle.engineDisplacement != null}">
+            🔧 <strong th:text="${vehicle.engineDisplacement} + 'L'"></strong>
+          </span>
+        <span th:if="${vehicle.numberOfCylinders != null}">
+            Цил: <strong th:text="${vehicle.numberOfCylinders}"></strong>
+          </span>
+        <span th:if="${vehicle.transmissionStyle != null}">
+            КП: <strong th:text="${vehicle.transmissionStyle}"></strong>
+          </span>
+        <span th:if="${vehicle.fuelType != null}">
+            Гориво: <strong th:text="${vehicle.fuelType}"></strong>
+          </span>
+        <span th:if="${vehicle.bodyClass != null}">
+            Каросерия: <strong th:text="${vehicle.bodyClass}"></strong>
+          </span>
+      </div>
+      <div class="vb-vin">VIN: <span th:text="${vehicle.vin}"></span></div>
+    </div>
+    <a href="/" class="btn-change-vin">Смяна на автомобил</a>
+  </div>
+</div>
+
+<!-- Page Header -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <h1 class="page-title">Изберете системна група</h1>
+    <p class="page-sub">Изберете система на автомобила за да разгледате компонентите и диаграмите с части</p>
+  </div>
+</div>
+
+<!-- Groups Grid -->
+<main class="groups-main">
+  <div class="groups-grid">
+    <a
+            th:each="group : ${groups}"
+            th:href="@{/group/{code}(code=${group.code}, vin=${vehicle != null ? vehicle.vin : ''})}"
+            class="group-card"
+            th:attr="data-group=${group.code}"
+    >
+      <div class="group-card-inner">
+        <div class="group-icon" th:text="${group.icon}"></div>
+        <div class="group-name" th:text="${group.nameBg}"></div>
+        <div class="group-count">
+          <span th:text="${#lists.size(group.componentGroups)}"></span> компонента
+        </div>
+        <div class="group-arrow">→</div>
+      </div>
+      <div class="group-card-shine"></div>
+    </a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>BMW Parts Catalog © 2024</span>
+    <span>Данни от NHTSA и BMW OEM база данни</span>
+  </div>
+</footer>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

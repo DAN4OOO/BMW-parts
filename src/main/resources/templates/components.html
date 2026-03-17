@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title th:text="${group.nameBg} + ' — BMW Parts'">Компоненти</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+</head>
+<body class="page-components">
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="brand" href="/">
+      <span class="brand-logo">BMW</span>
+      <span class="brand-sub">Parts Catalog</span>
+    </a>
+    <div class="breadcrumb">
+      <a href="/">Начало</a>
+      <span class="bc-sep">›</span>
+      <a th:href="@{/groups(vin=${vin})}">Групи</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-active" th:text="${group.nameBg}"></span>
+    </div>
+  </div>
+</nav>
+
+<div class="page-header page-header--group">
+  <div class="page-header-inner">
+    <div class="group-badge">
+      <span th:text="${group.icon}"></span>
+      <span th:text="${group.nameBg}"></span>
+    </div>
+    <h1 class="page-title">Изберете компонент</h1>
+    <p class="page-sub">Кликнете върху диаграма за да видите всички части, OE номера и цени от български доставчици</p>
+  </div>
+</div>
+
+<main class="components-main">
+  <div class="components-grid">
+    <a
+            th:each="comp : ${components}"
+            th:href="@{/component/{code}(code=${comp.code}, vin=${vin})}"
+            class="component-card"
+    >
+      <div class="comp-diagram-area">
+        <!-- Show real diagram if available, otherwise show placeholder -->
+        <img th:if="${comp.diagramPath != null}"
+             th:src="${comp.diagramPath}"
+             class="comp-diagram-img"
+             th:alt="${comp.nameBg}"/>
+        <div th:if="${comp.diagramPath == null}" class="comp-diagram-placeholder">
+          <div class="diagram-placeholder-inner">
+            <div class="diagram-gear"></div>
+            <div class="diagram-dots">
+              <span class="dd" th:each="n : ${#numbers.sequence(1, 5)}" th:text="${n}"></span>
+            </div>
+          </div>
+          <div class="diagram-label">Диаграма скоро</div>
+        </div>
+      </div>
+      <div class="comp-info">
+        <div class="comp-name" th:text="${comp.nameBg}"></div>
+        <div class="comp-desc" th:if="${comp.descriptionBg != null}" th:text="${comp.descriptionBg}"></div>
+        <div class="comp-parts-count">
+          <span th:text="${#lists.size(comp.parts)}"></span> части в диаграмата
+        </div>
+        <div class="comp-cta">Виж диаграма и части →</div>
+      </div>
+    </a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>BMW Parts Catalog © 2024</span>
+  </div>
+</footer>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>
