@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -20,6 +20,30 @@
       <a href="/">Начало</a>
       <span class="bc-sep">›</span>
       <span class="bc-active">Групи части</span>
+    </div>
+    <div class="nav-links" sec:authorize="isAuthenticated()">
+      <a href="/garage" class="nav-link">Garage</a>
+      <a href="/history" class="nav-link">History</a>
+      <div class="user-menu-dropdown">
+        <button class="user-menu-btn" id="userMenuBtn">
+          <span class="user-avatar" th:text="${currentUserName != null ? currentUserName.substring(0, 1).toUpperCase() : 'U'}"></span>
+          <span th:text="${currentUserName != null ? currentUserName : 'User'}"></span>
+          <span class="dropdown-arrow">▼</span>
+        </button>
+        <div class="dropdown-menu" id="userDropdown">
+          <div class="dropdown-header" th:if="${currentUser != null}">
+            <div class="user-email" th:text="${currentUser.email}"></div>
+          </div>
+          <a href="/profile" class="dropdown-item">Profile</a>
+          <form th:action="@{/logout}" method="post">
+            <button type="submit" class="dropdown-item logout-btn">Logout</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="nav-links" sec:authorize="!isAuthenticated()">
+      <a href="/login" class="nav-link">Sign In</a>
+      <a href="/register" class="nav-link">Register</a>
     </div>
   </div>
 </nav>
@@ -57,6 +81,13 @@
       <div class="vb-vin">VIN: <span th:text="${vehicle.vin}"></span></div>
     </div>
     <a href="/" class="btn-change-vin">Смяна на автомобил</a>
+    <form th:action="@{/api/garage/add}" method="POST" class="garage-action-form">
+      <input type="hidden" name="vin" th:value="${vehicle.vin}"/>
+      <button type="submit" class="btn-add-garage">
+        <span th:if="${inGarage}" th:text="'✓ In Garage'"></span>
+        <span th:unless="${inGarage}" th:text="'Add to Garage'"></span>
+      </button>
+    </form>
   </div>
 </div>
 

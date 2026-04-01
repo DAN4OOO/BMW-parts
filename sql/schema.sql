@@ -286,3 +286,41 @@ INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sor
 (14,'trim-infotainment', 'iDrive / Мултимедия / Навигация',             NULL,NULL,10),
 (14,'trim-sunroof',      'Панорамен люк',                                NULL,NULL,11),
 (14,'trim-seatbelts',    'Предпазни колани',                             NULL,NULL,12);
+
+-- ═══════════════════════════════════════════════════════════════
+--  USERS (потребители)
+-- ═══════════════════════════════════════════════════════════════
+CREATE TABLE users (
+    id           BIGINT        AUTO_INCREMENT PRIMARY KEY,
+    email        VARCHAR(100)  NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    full_name    VARCHAR(100)  NOT NULL,
+    created_at   TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
+    enabled      BOOLEAN       DEFAULT TRUE
+);
+
+-- ═══════════════════════════════════════════════════════════════
+--  SEARCH_HISTORY (история на търсения)
+-- ═══════════════════════════════════════════════════════════════
+CREATE TABLE search_history (
+    id         BIGINT        AUTO_INCREMENT PRIMARY KEY,
+    user_id    BIGINT        NOT NULL,
+    vin        VARCHAR(17)   NOT NULL,
+    searched_at TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_user_vin (user_id, vin),
+    INDEX idx_searched_at (searched_at),
+    CONSTRAINT fk_sh_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- ═══════════════════════════════════════════════════════════════
+--  USER_GARAGE (гараж на потребител)
+-- ═══════════════════════════════════════════════════════════════
+CREATE TABLE user_garage (
+    id         BIGINT        AUTO_INCREMENT PRIMARY KEY,
+    user_id    BIGINT        NOT NULL,
+    vin        VARCHAR(17)   NOT NULL,
+    added_at   TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_user_vin (user_id, vin),
+    INDEX idx_vin (vin),
+    CONSTRAINT fk_ug_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

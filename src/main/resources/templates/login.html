@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login — BMW Parts Catalog</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+</head>
+<body class="page-auth">
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="brand" href="/">
+      <span class="brand-logo">BMW</span>
+      <span class="brand-sub">Parts Catalog</span>
+    </a>
+    <div class="nav-links">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/register" class="nav-link">Register</a>
+    </div>
+  </div>
+</nav>
+
+<main class="auth-main">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-logo">BMW</div>
+      <h1 class="auth-title">Sign In</h1>
+      <p class="auth-subtitle">Access your garage and search history</p>
+    </div>
+
+    <div th:if="${loginError}" class="alert-error">
+      <span class="alert-icon">⚠</span>
+      Invalid email or password
+    </div>
+
+    <div th:if="${registrationSuccess}" class="alert-success">
+      <span class="alert-icon">✓</span>
+      Registration successful! Please sign in.
+    </div>
+
+    <form class="auth-form" th:action="@{/do-login}" method="POST">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="username" required />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required />
+      </div>
+      <button type="submit" class="btn-auth">Sign In</button>
+    </form>
+
+    <div class="auth-footer">
+      Don't have an account? <a href="/register">Register here</a>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>BMW Parts Catalog © 2024</span>
+    <span>Данни от NHTSA и BMW OEM база данни</span>
+  </div>
+</footer>
+
+</body>
+</html>

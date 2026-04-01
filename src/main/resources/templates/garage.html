@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Garage — BMW Parts Catalog</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+</head>
+<body class="page-groups">
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="brand" href="/">
+      <span class="brand-logo">BMW</span>
+      <span class="brand-sub">Parts Catalog</span>
+    </a>
+    <div class="breadcrumb">
+      <a href="/">Начало</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-active">Моят гараж</span>
+    </div>
+    <div class="nav-links">
+      <div class="user-menu-dropdown">
+        <button class="user-menu-btn" id="userMenuBtn">
+          <span class="user-avatar" th:text="${currentUserName != null ? currentUserName.substring(0, 1).toUpperCase() : 'U'}"></span>
+          <span th:text="${currentUserName != null ? currentUserName : 'User'}"></span>
+          <span class="dropdown-arrow">▼</span>
+        </button>
+        <div class="dropdown-menu" id="userDropdown">
+          <div class="dropdown-header" th:if="${currentUser != null}">
+            <div class="user-email" th:text="${currentUser.email}"></div>
+          </div>
+          <a href="/profile" class="dropdown-item">Profile</a>
+          <form th:action="@{/logout}" method="post">
+            <button type="submit" class="dropdown-item logout-btn">Logout</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="groups-main">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <h1 class="page-title">My Garage</h1>
+      <p class="page-sub">Your saved vehicles</p>
+    </div>
+  </div>
+
+  <div th:if="${garageItems.empty}" class="empty-state">
+    <div class="empty-icon">🚗</div>
+    <p>Your garage is empty. Add vehicles from the VIN decoder.</p>
+    <a href="/" class="btn-primary">Decode a VIN</a>
+  </div>
+
+  <div th:unless="${garageItems.empty}" class="garage-grid">
+    <div th:each="item : ${garageItems}" class="garage-card">
+      <div class="garage-card-inner">
+        <div class="garage-vin">
+          <strong>VIN:</strong> <span th:text="${item.vin}"></span>
+        </div>
+        <div class="garage-added">
+          Added: <span th:text="${#temporals.format(item.addedAt, 'MMM dd, yyyy')}"></span>
+        </div>
+        <div class="garage-actions">
+          <a th:href="@{/groups(vin=${item.vin})}" class="btn-view">View Parts</a>
+          <form th:action="@{/api/garage/remove}" method="POST" style="display:inline;">
+            <input type="hidden" name="vin" th:value="${item.vin}"/>
+            <button type="submit" class="btn-remove"
+                    onclick="return confirm('Remove this vehicle from your garage?')">Remove</button>
+          </form>
+        </div>
+      </div>
+      <div class="garage-card-shine"></div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>BMW Parts Catalog © 2024</span>
+    <span>Данни от NHTSA и BMW OEM база данни</span>
+  </div>
+</footer>
+
+</body>
+</html>
