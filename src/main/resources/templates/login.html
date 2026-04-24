@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login — BMW Parts Catalog</title>
+  <title>Вход — BMW Каталог с части</title>
   <link rel="stylesheet" th:href="@{/css/main.css}"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script th:src="@{/js/theme.js}"></script>
 </head>
 <body class="page-auth">
 
@@ -14,11 +15,19 @@
   <div class="nav-inner">
     <a class="brand" href="/">
       <span class="brand-logo">BMW</span>
-      <span class="brand-sub">Parts Catalog</span>
+      <span class="brand-sub">Каталог с части</span>
     </a>
     <div class="nav-links">
-      <a href="/" class="nav-link">Home</a>
-      <a href="/register" class="nav-link">Register</a>
+      <a href="/" class="nav-link">Начало</a>
+      <a href="/register" class="nav-link">Регистрация</a>
+      <div class="theme-toggle-simple">
+        <button class="theme-option" id="darkThemeBtn" onclick="setTheme('dark')" title="Тъмен режим">
+          <span class="theme-icon">🌙</span>
+        </button>
+        <button class="theme-option" id="lightThemeBtn" onclick="setTheme('light')" title="Светъл режим">
+          <span class="theme-icon">☀️</span>
+        </button>
+      </div>
     </div>
   </div>
 </nav>
@@ -27,18 +36,18 @@
   <div class="auth-card">
     <div class="auth-header">
       <div class="auth-logo">BMW</div>
-      <h1 class="auth-title">Sign In</h1>
-      <p class="auth-subtitle">Access your garage and search history</p>
+      <h1 class="auth-title">Вход</h1>
+      <p class="auth-subtitle">Достъп до вашия гараж и история на търсения</p>
     </div>
 
     <div th:if="${loginError}" class="alert-error">
       <span class="alert-icon">⚠</span>
-      Invalid email or password
+      Невалиден имейл или парола
     </div>
 
     <div th:if="${registrationSuccess}" class="alert-success">
       <span class="alert-icon">✓</span>
-      Registration successful! Please sign in.
+      Регистрацията успешна! Моля, влезте.
     </div>
 
     <form class="auth-form" th:action="@{/do-login}" method="POST">
@@ -47,21 +56,21 @@
         <input type="email" id="email" name="username" required />
       </div>
       <div class="form-group">
-        <label for="password">Password</label>
+        <label for="password">Парола</label>
         <input type="password" id="password" name="password" required />
       </div>
-      <button type="submit" class="btn-auth">Sign In</button>
+      <button type="submit" class="btn-auth">Вход</button>
     </form>
 
     <div class="auth-footer">
-      Don't have an account? <a href="/register">Register here</a>
+      Нямате акаунт? <a href="/register">Регистрирайте се тук</a>
     </div>
   </div>
 </main>
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <span>BMW Parts Catalog © 2024</span>
+    <span>BMW Каталог с части © 2024</span>
     <span>Данни от NHTSA и BMW OEM база данни</span>
   </div>
 </footer>

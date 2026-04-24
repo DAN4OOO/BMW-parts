@@ -30,6 +30,8 @@ public class MainController {
     private final SearchHistoryRepository searchHistoryRepository;
 
     // Helper to get current user ID
+
+
     private Long getCurrentUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !(auth.getPrincipal() instanceof UserDetails)) {

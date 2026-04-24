@@ -29,6 +29,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+
     private final UserRepository userRepository;
 
     @Bean

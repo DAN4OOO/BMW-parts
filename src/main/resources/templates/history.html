@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Search History — BMW Parts Catalog</title>
+  <title>История на търсения — BMW Каталог с части</title>
   <link rel="stylesheet" th:href="@{/css/main.css}"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script th:src="@{/js/theme.js}"></script>
 </head>
 <body class="page-groups">
 
@@ -14,7 +15,7 @@
   <div class="nav-inner">
     <a class="brand" href="/">
       <span class="brand-logo">BMW</span>
-      <span class="brand-sub">Parts Catalog</span>
+      <span class="brand-sub">Каталог с части</span>
     </a>
     <div class="breadcrumb">
       <a href="/">Начало</a>
@@ -25,16 +26,31 @@
       <div class="user-menu-dropdown">
         <button class="user-menu-btn" id="userMenuBtn">
           <span class="user-avatar" th:text="${currentUserName != null ? currentUserName.substring(0, 1).toUpperCase() : 'U'}"></span>
-          <span th:text="${currentUserName != null ? currentUserName : 'User'}"></span>
+          <span th:text="${currentUserName != null ? currentUserName : 'Потребител'}"></span>
           <span class="dropdown-arrow">▼</span>
         </button>
         <div class="dropdown-menu" id="userDropdown">
           <div class="dropdown-header" th:if="${currentUser != null}">
             <div class="user-email" th:text="${currentUser.email}"></div>
           </div>
-          <a href="/profile" class="dropdown-item">Profile</a>
+          <div class="dropdown-header">
+            <div class="theme-section">
+              <div class="theme-title">Тема</div>
+              <div class="theme-options">
+                <button class="theme-option" id="darkThemeBtn" onclick="setTheme('dark')">
+                  <span class="theme-icon">🌙</span>
+                  <span>Тъмна</span>
+                </button>
+                <button class="theme-option" id="lightThemeBtn" onclick="setTheme('light')">
+                  <span class="theme-icon">☀️</span>
+                  <span>Светла</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <a href="/profile" class="dropdown-item">Профил</a>
           <form th:action="@{/logout}" method="post">
-            <button type="submit" class="dropdown-item logout-btn">Logout</button>
+            <button type="submit" class="dropdown-item logout-btn">Изход</button>
           </form>
         </div>
       </div>
@@ -45,15 +61,15 @@
 <main class="groups-main">
   <div class="page-header">
     <div class="page-header-inner">
-      <h1 class="page-title">Search History</h1>
-      <p class="page-sub">Your previously decoded VINs</p>
+      <h1 class="page-title">История на търсения</h1>
+      <p class="page-sub">Предишно декодирани VIN номера</p>
     </div>
   </div>
 
   <div th:if="${searchHistory.empty}" class="empty-state">
     <div class="empty-icon">🔍</div>
-    <p>No search history yet.</p>
-    <a href="/" class="btn-primary">Decode a VIN</a>
+    <p>Все още няма история на търсения.</p>
+    <a href="/" class="btn-primary">Декодирай VIN</a>
   </div>
 
   <div th:unless="${searchHistory.empty}" class="history-list">
@@ -61,8 +77,8 @@
       <thead>
         <tr>
           <th>VIN</th>
-          <th>Searched</th>
-          <th>Actions</th>
+          <th>Търсено</th>
+          <th>Действия</th>
         </tr>
       </thead>
       <tbody>
@@ -70,11 +86,11 @@
           <td th:text="${entry.vin}"></td>
           <td th:text="${#temporals.format(entry.searchedAt, 'MMM dd, yyyy HH:mm')}"></td>
           <td>
-            <a th:href="@{/groups(vin=${entry.vin})}" class="btn-view-sm">View Parts</a>
+            <a th:href="@{/groups(vin=${entry.vin})}" class="btn-view-sm">Разгледай части</a>
             <form th:action="@{/api/history/clear}" method="POST" style="display:inline;">
               <input type="hidden" name="id" th:value="${entry.id}"/>
               <button type="submit" class="btn-remove-sm"
-                      onclick="return confirm('Clear this entry?')">Clear</button>
+                      onclick="return confirm('Изчисти този запис?')">Изчисти</button>
             </form>
           </td>
         </tr>
@@ -83,8 +99,8 @@
 
     <div class="history-actions">
       <form th:action="@{/api/history/clear-all}" method="POST"
-            onsubmit="return confirm('Clear all search history? This cannot be undone.')">
-        <button type="submit" class="btn-danger">Clear All History</button>
+            onsubmit="return confirm('Изчисти цялата история на търсения? Това действие не може да бъде отменено.')">
+        <button type="submit" class="btn-danger">Изчисти цялата история</button>
       </form>
     </div>
   </div>
@@ -92,7 +108,7 @@
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <span>BMW Parts Catalog © 2024</span>
+    <span>BMW Каталог с части © 2024</span>
     <span>Данни от NHTSA и BMW OEM база данни</span>
   </div>
 </footer>

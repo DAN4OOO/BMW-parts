@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>My Garage — BMW Parts Catalog</title>
+  <title>Моят гараж — BMW Каталог с части</title>
   <link rel="stylesheet" th:href="@{/css/main.css}"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script th:src="@{/js/theme.js}"></script>
 </head>
 <body class="page-groups">
 
@@ -14,7 +15,7 @@
   <div class="nav-inner">
     <a class="brand" href="/">
       <span class="brand-logo">BMW</span>
-      <span class="brand-sub">Parts Catalog</span>
+      <span class="brand-sub">Каталог с части</span>
     </a>
     <div class="breadcrumb">
       <a href="/">Начало</a>
@@ -25,16 +26,31 @@
       <div class="user-menu-dropdown">
         <button class="user-menu-btn" id="userMenuBtn">
           <span class="user-avatar" th:text="${currentUserName != null ? currentUserName.substring(0, 1).toUpperCase() : 'U'}"></span>
-          <span th:text="${currentUserName != null ? currentUserName : 'User'}"></span>
+          <span th:text="${currentUserName != null ? currentUserName : 'Потребител'}"></span>
           <span class="dropdown-arrow">▼</span>
         </button>
         <div class="dropdown-menu" id="userDropdown">
           <div class="dropdown-header" th:if="${currentUser != null}">
             <div class="user-email" th:text="${currentUser.email}"></div>
           </div>
-          <a href="/profile" class="dropdown-item">Profile</a>
+          <div class="dropdown-header">
+            <div class="theme-section">
+              <div class="theme-title">Тема</div>
+              <div class="theme-options">
+                <button class="theme-option" id="darkThemeBtn" onclick="setTheme('dark')">
+                  <span class="theme-icon">🌙</span>
+                  <span>Тъмна</span>
+                </button>
+                <button class="theme-option" id="lightThemeBtn" onclick="setTheme('light')">
+                  <span class="theme-icon">☀️</span>
+                  <span>Светла</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <a href="/profile" class="dropdown-item">Профил</a>
           <form th:action="@{/logout}" method="post">
-            <button type="submit" class="dropdown-item logout-btn">Logout</button>
+            <button type="submit" class="dropdown-item logout-btn">Изход</button>
           </form>
         </div>
       </div>
@@ -45,15 +61,15 @@
 <main class="groups-main">
   <div class="page-header">
     <div class="page-header-inner">
-      <h1 class="page-title">My Garage</h1>
-      <p class="page-sub">Your saved vehicles</p>
+      <h1 class="page-title">Моят гараж</h1>
+      <p class="page-sub">Вашите запазени автомобили</p>
     </div>
   </div>
 
   <div th:if="${garageItems.empty}" class="empty-state">
     <div class="empty-icon">🚗</div>
-    <p>Your garage is empty. Add vehicles from the VIN decoder.</p>
-    <a href="/" class="btn-primary">Decode a VIN</a>
+    <p>Вашият гараж е празен. Добавете автомобили от VIN декодера.</p>
+    <a href="/" class="btn-primary">Декодирай VIN</a>
   </div>
 
   <div th:unless="${garageItems.empty}" class="garage-grid">
@@ -63,14 +79,14 @@
           <strong>VIN:</strong> <span th:text="${item.vin}"></span>
         </div>
         <div class="garage-added">
-          Added: <span th:text="${#temporals.format(item.addedAt, 'MMM dd, yyyy')}"></span>
+          Добавен: <span th:text="${#temporals.format(item.addedAt, 'MMM dd, yyyy')}"></span>
         </div>
         <div class="garage-actions">
-          <a th:href="@{/groups(vin=${item.vin})}" class="btn-view">View Parts</a>
+          <a th:href="@{/groups(vin=${item.vin})}" class="btn-view">Разгледай части</a>
           <form th:action="@{/api/garage/remove}" method="POST" style="display:inline;">
             <input type="hidden" name="vin" th:value="${item.vin}"/>
             <button type="submit" class="btn-remove"
-                    onclick="return confirm('Remove this vehicle from your garage?')">Remove</button>
+                    onclick="return confirm('Премахнете този автомобил от вашия гараж?')">Премахни</button>
           </form>
         </div>
       </div>

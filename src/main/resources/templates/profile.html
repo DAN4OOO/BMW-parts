@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Profile — BMW Parts Catalog</title>
+  <title>Профил — BMW Каталог с части</title>
   <link rel="stylesheet" th:href="@{/css/main.css}"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -14,27 +14,27 @@
   <div class="nav-inner">
     <a class="brand" href="/">
       <span class="brand-logo">BMW</span>
-      <span class="brand-sub">Parts Catalog</span>
+      <span class="brand-sub">Каталог с части</span>
     </a>
     <div class="breadcrumb">
       <a href="/">Начало</a>
       <span class="bc-sep">›</span>
-      <span class="bc-active">Profile</span>
+      <span class="bc-active">Профил</span>
     </div>
     <div class="nav-links">
       <div class="user-menu-dropdown">
         <button class="user-menu-btn" id="userMenuBtn">
           <span class="user-avatar" th:text="${currentUserName != null ? currentUserName.substring(0, 1).toUpperCase() : 'U'}"></span>
-          <span th:text="${currentUserName != null ? currentUserName : 'User'}"></span>
+          <span th:text="${currentUserName != null ? currentUserName : 'Потребител'}"></span>
           <span class="dropdown-arrow">▼</span>
         </button>
         <div class="dropdown-menu" id="userDropdown">
           <div class="dropdown-header" th:if="${currentUser != null}">
             <div class="user-email" th:text="${currentUser.email}"></div>
           </div>
-          <a href="/profile" class="dropdown-item">Profile</a>
+          <a href="/profile" class="dropdown-item">Профил</a>
           <form th:action="@{/logout}" method="post">
-            <button type="submit" class="dropdown-item logout-btn">Logout</button>
+            <button type="submit" class="dropdown-item logout-btn">Изход</button>
           </form>
         </div>
       </div>
@@ -45,38 +45,38 @@
 <main class="groups-main">
   <div class="page-header">
     <div class="page-header-inner">
-      <h1 class="page-title">My Profile</h1>
-      <p class="page-sub">Account information and settings</p>
+      <h1 class="page-title">Моят профил</h1>
+      <p class="page-sub">Информация за акаунта и настройки</p>
     </div>
   </div>
 
   <div class="profile-card" th:if="${currentUser != null}">
     <div class="profile-section">
-      <h3>Account Details</h3>
+      <h3>Детайли на акаунта</h3>
       <div class="profile-field">
-        <label>Full Name</label>
+        <label>Име и фамилия</label>
         <div th:text="${currentUser.fullName}">John Doe</div>
       </div>
       <div class="profile-field">
-        <label>Email</label>
+        <label>Имейл</label>
         <div th:text="${currentUser.email}">user@example.com</div>
       </div>
       <div class="profile-field">
-        <label>Account Created</label>
+        <label>Акаунт създаден</label>
         <div th:text="${#temporals.format(currentUser.createdAt, 'MMM dd, yyyy')}">Jan 01, 2024</div>
       </div>
     </div>
 
     <div class="profile-section">
-      <h3>Statistics</h3>
+      <h3>Статистика</h3>
       <div class="profile-stats">
         <div class="stat-item">
           <div class="stat-value" th:text="${garageCount}">0</div>
-          <div class="stat-label">Vehicles in Garage</div>
+          <div class="stat-label">Автомобили в гаража</div>
         </div>
         <div class="stat-item">
           <div class="stat-value" th:text="${historyCount}">0</div>
-          <div class="stat-label">Searches</div>
+          <div class="stat-label">Търсения</div>
         </div>
       </div>
     </div>
@@ -85,7 +85,7 @@
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <span>BMW Parts Catalog © 2024</span>
+    <span>BMW Каталог с части © 2024</span>
     <span>Данни от NHTSA и BMW OEM база данни</span>
   </div>
 </footer>

@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Register — BMW Parts Catalog</title>
+  <title>Регистрация — BMW Каталог с части</title>
   <link rel="stylesheet" th:href="@{/css/main.css}"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script th:src="@{/js/theme.js}"></script>
 </head>
 <body class="page-auth">
 
@@ -14,11 +15,19 @@
   <div class="nav-inner">
     <a class="brand" href="/">
       <span class="brand-logo">BMW</span>
-      <span class="brand-sub">Parts Catalog</span>
+      <span class="brand-sub">Каталог с части</span>
     </a>
     <div class="nav-links">
-      <a href="/" class="nav-link">Home</a>
-      <a href="/login" class="nav-link">Sign In</a>
+      <a href="/" class="nav-link">Начало</a>
+      <a href="/login" class="nav-link">Вход</a>
+      <div class="theme-toggle-simple">
+        <button class="theme-option" id="darkThemeBtn" onclick="setTheme('dark')" title="Тъмен режим">
+          <span class="theme-icon">🌙</span>
+        </button>
+        <button class="theme-option" id="lightThemeBtn" onclick="setTheme('light')" title="Светъл режим">
+          <span class="theme-icon">☀️</span>
+        </button>
+      </div>
     </div>
   </div>
 </nav>
@@ -27,8 +36,8 @@
   <div class="auth-card">
     <div class="auth-header">
       <div class="auth-logo">BMW</div>
-      <h1 class="auth-title">Create Account</h1>
-      <p class="auth-subtitle">Join to save your garage and search history</p>
+      <h1 class="auth-title">Създай акаунт</h1>
+      <p class="auth-subtitle">Присъединете се, за да запазите гаража и историята на търсения</p>
     </div>
 
     <div th:if="${registrationError}" class="alert-error">
@@ -38,7 +47,7 @@
 
     <form class="auth-form" th:action="@{/do-register}" method="POST">
       <div class="form-group">
-        <label for="fullName">Full Name</label>
+        <label for="fullName">Име и фамилия</label>
         <input type="text" id="fullName" name="fullName" required />
       </div>
       <div class="form-group">
@@ -46,22 +55,22 @@
         <input type="email" id="email" name="email" required />
       </div>
       <div class="form-group">
-        <label for="password">Password</label>
+        <label for="password">Парола</label>
         <input type="password" id="password" name="password" required minlength="6" />
-        <small>Minimum 6 characters</small>
+        <small>Минимум 6 символа</small>
       </div>
-      <button type="submit" class="btn-auth">Create Account</button>
+      <button type="submit" class="btn-auth">Създай акаунт</button>
     </form>
 
     <div class="auth-footer">
-      Already have an account? <a href="/login">Sign in here</a>
+      Вече имате акаунт? <a href="/login">Влезте тук</a>
     </div>
   </div>
 </main>
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <span>BMW Parts Catalog © 2024</span>
+    <span>BMW Каталог с части © 2024</span>
     <span>Данни от NHTSA и BMW OEM база данни</span>
   </div>
 </footer>

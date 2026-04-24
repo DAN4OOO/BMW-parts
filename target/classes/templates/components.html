@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title th:text="${group.nameBg} + ' — BMW Parts'">Компоненти</title>
+  <title th:text="${group.nameBg} + ' — BMW Каталог с части'">Компоненти</title>
   <link rel="stylesheet" th:href="@{/css/main.css}"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script th:src="@{/js/theme.js}"></script>
 </head>
 <body class="page-components">
 
@@ -14,7 +15,7 @@
   <div class="nav-inner">
     <a class="brand" href="/">
       <span class="brand-logo">BMW</span>
-      <span class="brand-sub">Parts Catalog</span>
+      <span class="brand-sub">Каталог с части</span>
     </a>
     <div class="breadcrumb">
       <a href="/">Начало</a>
@@ -24,15 +25,15 @@
       <span class="bc-active" th:text="${group.nameBg}"></span>
     </div>
     <div class="nav-links" sec:authorize="isAuthenticated()">
-      <a href="/garage" class="nav-link">Garage</a>
-      <a href="/history" class="nav-link">History</a>
+      <a href="/garage" class="nav-link">Гараж</a>
+      <a href="/history" class="nav-link">История</a>
       <form th:action="@{/logout}" method="post" style="display:inline;">
-        <button type="submit" class="nav-link-btn">Logout</button>
+        <button type="submit" class="nav-link-btn">Изход</button>
       </form>
     </div>
     <div class="nav-links" sec:authorize="!isAuthenticated()">
-      <a href="/login" class="nav-link">Sign In</a>
-      <a href="/register" class="nav-link">Register</a>
+      <a href="/login" class="nav-link">Вход</a>
+      <a href="/register" class="nav-link">Регистрация</a>
     </div>
   </div>
 </nav>
@@ -85,10 +86,11 @@
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <span>BMW Parts Catalog © 2024</span>
+    <span>BMW Каталог с части © 2024</span>
   </div>
 </footer>
 
 <script th:src="@{/js/main.js}"></script>
 </body>
 </html>
+

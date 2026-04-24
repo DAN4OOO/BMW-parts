@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Групи части — BMW Parts Catalog</title>
+  <title>Групи части — BMW Каталог с части</title>
   <link rel="stylesheet" th:href="@{/css/main.css}"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script th:src="@{/js/theme.js}"></script>
 </head>
 <body class="page-groups">
 
@@ -14,36 +15,45 @@
   <div class="nav-inner">
     <a class="brand" href="/">
       <span class="brand-logo">BMW</span>
-      <span class="brand-sub">Parts Catalog</span>
+      <span class="brand-sub">Каталог с части</span>
     </a>
     <div class="breadcrumb">
       <a href="/">Начало</a>
       <span class="bc-sep">›</span>
       <span class="bc-active">Групи части</span>
     </div>
-    <div class="nav-links" sec:authorize="isAuthenticated()">
-      <a href="/garage" class="nav-link">Garage</a>
-      <a href="/history" class="nav-link">History</a>
+    <div class="nav-links">
       <div class="user-menu-dropdown">
         <button class="user-menu-btn" id="userMenuBtn">
           <span class="user-avatar" th:text="${currentUserName != null ? currentUserName.substring(0, 1).toUpperCase() : 'U'}"></span>
-          <span th:text="${currentUserName != null ? currentUserName : 'User'}"></span>
+          <span th:text="${currentUserName != null ? currentUserName : 'Потребител'}"></span>
           <span class="dropdown-arrow">▼</span>
         </button>
         <div class="dropdown-menu" id="userDropdown">
           <div class="dropdown-header" th:if="${currentUser != null}">
             <div class="user-email" th:text="${currentUser.email}"></div>
           </div>
-          <a href="/profile" class="dropdown-item">Profile</a>
+          <div class="dropdown-header">
+            <div class="theme-section">
+              <div class="theme-title">Тема</div>
+              <div class="theme-options">
+                <button class="theme-option" id="darkThemeBtn" onclick="setTheme('dark')">
+                  <span class="theme-icon">🌙</span>
+                  <span>Тъмна</span>
+                </button>
+                <button class="theme-option" id="lightThemeBtn" onclick="setTheme('light')">
+                  <span class="theme-icon">☀️</span>
+                  <span>Светла</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <a href="/profile" class="dropdown-item">Профил</a>
           <form th:action="@{/logout}" method="post">
-            <button type="submit" class="dropdown-item logout-btn">Logout</button>
+            <button type="submit" class="dropdown-item logout-btn">Изход</button>
           </form>
         </div>
       </div>
-    </div>
-    <div class="nav-links" sec:authorize="!isAuthenticated()">
-      <a href="/login" class="nav-link">Sign In</a>
-      <a href="/register" class="nav-link">Register</a>
     </div>
   </div>
 </nav>
@@ -69,14 +79,47 @@
             Цил: <strong th:text="${vehicle.numberOfCylinders}"></strong>
           </span>
         <span th:if="${vehicle.transmissionStyle != null}">
-            КП: <strong th:text="${vehicle.transmissionStyle}"></strong>
-          </span>
+            Скоростна кутия: <strong>
+            <span th:if="${vehicle.transmissionStyle == 'AUTOMATIC' or vehicle.transmissionStyle == 'Automatic'}">Автоматична</span>
+            <span th:if="${vehicle.transmissionStyle == 'MANUAL' or vehicle.transmissionStyle == 'Manual'}">Ръчна</span>
+            <span th:if="${vehicle.transmissionStyle == 'AUTOMATED_MANUAL' or vehicle.transmissionStyle == 'Automated Manual'}">Автоматизирана ръчна</span>
+            <span th:if="${vehicle.transmissionStyle == 'DIRECT_DRIVE' or vehicle.transmissionStyle == 'Direct Drive'}">Директно задвижване</span>
+            <span th:if="${vehicle.transmissionStyle == 'UNKNOWN' or vehicle.transmissionStyle == 'Unknown'}">Неизвестна</span>
+            <span th:if="${vehicle.transmissionStyle != null and vehicle.transmissionStyle != 'AUTOMATIC' and vehicle.transmissionStyle != 'Automatic' and vehicle.transmissionStyle != 'MANUAL' and vehicle.transmissionStyle != 'Manual' and vehicle.transmissionStyle != 'AUTOMATED_MANUAL' and vehicle.transmissionStyle != 'Automated Manual' and vehicle.transmissionStyle != 'DIRECT_DRIVE' and vehicle.transmissionStyle != 'Direct Drive' and vehicle.transmissionStyle != 'UNKNOWN' and vehicle.transmissionStyle != 'Unknown'}" th:text="${vehicle.transmissionStyle}"></span>
+        </strong>
+        </span>
         <span th:if="${vehicle.fuelType != null}">
-            Гориво: <strong th:text="${vehicle.fuelType}"></strong>
-          </span>
+            Гориво: <strong>
+            <span th:if="${vehicle.fuelType == 'GASOLINE' or vehicle.fuelType == 'Gasoline'}">Бензин</span>
+            <span th:if="${vehicle.fuelType == 'DIESEL' or vehicle.fuelType == 'Diesel'}">Дизел</span>
+            <span th:if="${vehicle.fuelType == 'ELECTRIC' or vehicle.fuelType == 'Electric'}">Електричество</span>
+            <span th:if="${vehicle.fuelType == 'HYBRID' or vehicle.fuelType == 'Hybrid'}">Хибрид</span>
+            <span th:if="${vehicle.fuelType == 'ETHANOL' or vehicle.fuelType == 'Ethanol'}">Етанол</span>
+            <span th:if="${vehicle.fuelType == 'LPG' or vehicle.fuelType == 'LPG'}">Пропан-бутан</span>
+            <span th:if="${vehicle.fuelType == 'CNG' or vehicle.fuelType == 'CNG'}">Метан</span>
+            <span th:if="${vehicle.fuelType != null and vehicle.fuelType != 'GASOLINE' and vehicle.fuelType != 'Gasoline' and vehicle.fuelType != 'DIESEL' and vehicle.fuelType != 'Diesel' and vehicle.fuelType != 'ELECTRIC' and vehicle.fuelType != 'Electric' and vehicle.fuelType != 'HYBRID' and vehicle.fuelType != 'Hybrid' and vehicle.fuelType != 'ETHANOL' and vehicle.fuelType != 'Ethanol' and vehicle.fuelType != 'LPG' and vehicle.fuelType != 'LPG' and vehicle.fuelType != 'CNG' and vehicle.fuelType != 'CNG'}" th:text="${vehicle.fuelType}"></span>
+        </strong>
+        </span>
         <span th:if="${vehicle.bodyClass != null}">
-            Каросерия: <strong th:text="${vehicle.bodyClass}"></strong>
-          </span>
+            Каросерия: <strong>
+            <span th:if="${vehicle.bodyClass == 'SEDAN' or vehicle.bodyClass == 'Sedan' or vehicle.bodyClass == 'Sedan/Saloon'}">Седан</span>
+            <span th:if="${vehicle.bodyClass == 'COUPE' or vehicle.bodyClass == 'Coupe'}">Купе</span>
+            <span th:if="${vehicle.bodyClass == 'CONVERTIBLE' or vehicle.bodyClass == 'Convertible'}">Кабриолет</span>
+            <span th:if="${vehicle.bodyClass == 'WAGON' or vehicle.bodyClass == 'Wagon' or vehicle.bodyClass == 'Estate'}">Комби</span>
+            <span th:if="${vehicle.bodyClass == 'HATCHBACK' or vehicle.bodyClass == 'Hatchback'}">Хечбек</span>
+            <span th:if="${vehicle.bodyClass == 'SUV' or vehicle.bodyClass == 'SUV'}">SUV</span>
+            <span th:if="${vehicle.bodyClass == 'TRUCK' or vehicle.bodyClass == 'Truck' or vehicle.bodyClass == 'Pickup'}">Пикап</span>
+            <span th:if="${vehicle.bodyClass == 'VAN' or vehicle.bodyClass == 'Van'}">Ван</span>
+            <span th:if="${vehicle.bodyClass == 'MINIVAN' or vehicle.bodyClass == 'Minivan'}">Миниван</span>
+            <span th:if="${vehicle.bodyClass == 'CHASSIS_CAB' or vehicle.bodyClass == 'Chassis Cab'}">Шаси кабина</span>
+            <span th:if="${vehicle.bodyClass == 'LIMOUSINE' or vehicle.bodyClass == 'Limousine'}">Лимузина</span>
+            <span th:if="${vehicle.bodyClass == 'ROADSTER' or vehicle.bodyClass == 'Roadster'}">Роудстър</span>
+            <span th:if="${vehicle.bodyClass == 'MICROVAN' or vehicle.bodyClass == 'Microvan'}">Микрован</span>
+            <span th:if="${vehicle.bodyClass == 'CUSTOM' or vehicle.bodyClass == 'Custom'}">По поръчка</span>
+            <span th:if="${vehicle.bodyClass == 'UNKNOWN' or vehicle.bodyClass == 'Unknown'}">Неизвестна</span>
+            <span th:if="${vehicle.bodyClass != null and vehicle.bodyClass != 'SEDAN' and vehicle.bodyClass != 'Sedan' and vehicle.bodyClass != 'Sedan/Saloon' and vehicle.bodyClass != 'COUPE' and vehicle.bodyClass != 'Coupe' and vehicle.bodyClass != 'CONVERTIBLE' and vehicle.bodyClass != 'Convertible' and vehicle.bodyClass != 'WAGON' and vehicle.bodyClass != 'Wagon' and vehicle.bodyClass != 'Estate' and vehicle.bodyClass != 'HATCHBACK' and vehicle.bodyClass != 'Hatchback' and vehicle.bodyClass != 'SUV' and vehicle.bodyClass != 'SUV' and vehicle.bodyClass != 'TRUCK' and vehicle.bodyClass != 'Truck' and vehicle.bodyClass != 'Pickup' and vehicle.bodyClass != 'VAN' and vehicle.bodyClass != 'Van' and vehicle.bodyClass != 'MINIVAN' and vehicle.bodyClass != 'Minivan' and vehicle.bodyClass != 'CHASSIS_CAB' and vehicle.bodyClass != 'Chassis Cab' and vehicle.bodyClass != 'LIMOUSINE' and vehicle.bodyClass != 'Limousine' and vehicle.bodyClass != 'ROADSTER' and vehicle.bodyClass != 'Roadster' and vehicle.bodyClass != 'MICROVAN' and vehicle.bodyClass != 'Microvan' and vehicle.bodyClass != 'CUSTOM' and vehicle.bodyClass != 'Custom' and vehicle.bodyClass != 'UNKNOWN' and vehicle.bodyClass != 'Unknown'}" th:text="${vehicle.bodyClass}"></span>
+        </strong>
+        </span>
       </div>
       <div class="vb-vin">VIN: <span th:text="${vehicle.vin}"></span></div>
     </div>
@@ -84,8 +127,8 @@
     <form th:action="@{/api/garage/add}" method="POST" class="garage-action-form">
       <input type="hidden" name="vin" th:value="${vehicle.vin}"/>
       <button type="submit" class="btn-add-garage">
-        <span th:if="${inGarage}" th:text="'✓ In Garage'"></span>
-        <span th:unless="${inGarage}" th:text="'Add to Garage'"></span>
+        <span th:if="${inGarage}" th:text="'✓ В гаража'"></span>
+        <span th:unless="${inGarage}" th:text="'Добави в гараж'"></span>
       </button>
     </form>
   </div>
@@ -123,11 +166,10 @@
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <span>BMW Parts Catalog © 2024</span>
+    <span>BMW Каталог с части © 2024</span>
     <span>Данни от NHTSA и BMW OEM база данни</span>
   </div>
 </footer>
 
-<script th:src="@{/js/main.js}"></script>
 </body>
 </html>

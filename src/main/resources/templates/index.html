@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BMW Parts Catalog</title>
+  <title>BMW Каталог с части</title>
   <link rel="stylesheet" th:href="@{/css/main.css}"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script th:src="@{/js/theme.js}"></script>
 </head>
 <body class="page-home">
 
@@ -14,31 +15,70 @@
   <div class="nav-inner">
     <a class="brand" href="/">
       <span class="brand-logo">BMW</span>
-      <span class="brand-sub">Parts Catalog</span>
+      <span class="brand-sub">Каталог с части</span>
     </a>
     <div class="nav-links" sec:authorize="isAuthenticated()">
-      <a href="/garage" class="nav-link">Garage</a>
-      <a href="/history" class="nav-link">History</a>
+      <a href="/garage" class="nav-link">Гараж</a>
+      <a href="/history" class="nav-link">История</a>
       <div class="user-menu-dropdown">
         <button class="user-menu-btn" id="userMenuBtn">
           <span class="user-avatar" th:text="${currentUserName != null ? currentUserName.substring(0, 1).toUpperCase() : 'U'}"></span>
-          <span th:text="${currentUserName != null ? currentUserName : 'User'}"></span>
+          <span th:text="${currentUserName != null ? currentUserName : 'Потребител'}"></span>
           <span class="dropdown-arrow">▼</span>
         </button>
         <div class="dropdown-menu" id="userDropdown">
           <div class="dropdown-header" th:if="${currentUser != null}">
             <div class="user-email" th:text="${currentUser.email}"></div>
           </div>
-          <a href="/profile" class="dropdown-item">Profile</a>
+          <div class="dropdown-header">
+            <div class="theme-section">
+              <div class="theme-title">Тема</div>
+              <div class="theme-options">
+                <button class="theme-option" id="darkThemeBtn" onclick="setTheme('dark')">
+                  <span class="theme-icon">🌙</span>
+                  <span>Тъмна</span>
+                </button>
+                <button class="theme-option" id="lightThemeBtn" onclick="setTheme('light')">
+                  <span class="theme-icon">☀️</span>
+                  <span>Светла</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <a href="/profile" class="dropdown-item">Профил</a>
           <form th:action="@{/logout}" method="post">
-            <button type="submit" class="dropdown-item logout-btn">Logout</button>
+            <button type="submit" class="dropdown-item logout-btn">Изход</button>
           </form>
         </div>
       </div>
     </div>
     <div class="nav-links" sec:authorize="!isAuthenticated()">
-      <a href="/login" class="nav-link">Sign In</a>
-      <a href="/register" class="nav-link">Register</a>
+      <div class="user-menu-dropdown">
+        <button class="user-menu-btn" id="userMenuBtn">
+          <span class="user-avatar">👤</span>
+          <span>Акаунт</span>
+          <span class="dropdown-arrow">▼</span>
+        </button>
+        <div class="dropdown-menu" id="userDropdown">
+          <div class="dropdown-header">
+            <div class="theme-section">
+              <div class="theme-title">Тема</div>
+              <div class="theme-options">
+                <button class="theme-option" id="darkThemeBtn" onclick="setTheme('dark')">
+                  <span class="theme-icon">🌙</span>
+                  <span>Тъмна</span>
+                </button>
+                <button class="theme-option" id="lightThemeBtn" onclick="setTheme('light')">
+                  <span class="theme-icon">☀️</span>
+                  <span>Светла</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <a href="/login" class="dropdown-item">Вход</a>
+          <a href="/register" class="dropdown-item">Регистрация</a>
+        </div>
+      </div>
     </div>
   </div>
 </nav>
@@ -49,14 +89,14 @@
     <div class="hero-glow"></div>
   </div>
   <div class="hero-content">
-    <div class="hero-badge">NHTSA VIN DECODER</div>
+    <div class="hero-badge">NHTSA VIN ДЕКОДЕР</div>
     <h1 class="hero-title">
-      <span>Find Your BMW</span>
-      <span class="hero-title-accent">Genuine Parts</span>
+      <span>Намерете ваш BMW</span>
+      <span class="hero-title-accent">Оригинални части</span>
     </h1>
     <p class="hero-subtitle">
-      Enter your VIN number to identify your exact BMW model and browse
-      the complete OEM parts catalog with Bulgarian supplier pricing.
+      Въведете вашия VIN номер, за да идентифицирате точния модел BMW и да разгледате
+      пълния OEM каталог с части с цени от български доставчици.
     </p>
 
     <div th:if="${error}" class="alert-error">
@@ -66,7 +106,7 @@
 
     <form class="vin-form" action="/decode" method="POST" id="vinForm">
       <div class="vin-input-wrap">
-        <label class="vin-label">Vehicle Identification Number (VIN)</label>
+        <label class="vin-label">Идентификационен номер на автомобил (VIN)</label>
         <div class="vin-row">
           <input
                   type="text"
@@ -90,14 +130,14 @@
         </div>
       </div>
       <button type="submit" class="btn-decode" id="decodeBtn">
-        <span class="btn-text">Decode &amp; Browse Parts</span>
+        <span class="btn-text">Декодирай и разгледай части</span>
         <span class="btn-arrow">→</span>
       </button>
     </form>
 
     <div class="vin-live" id="vinLive" style="display:none">
       <div class="live-spinner"></div>
-      <span id="vinLiveText">Checking VIN…</span>
+      <span id="vinLiveText">Проверка на VIN…</span>
     </div>
 
     <div class="vin-samples">
@@ -120,11 +160,6 @@
         </div>
       </div>
     </div>
-    <div class="hero-stats">
-      <div class="stat-item"><div class="stat-num">50,000+</div><div class="stat-lbl">OEM Part Numbers</div></div>
-      <div class="stat-item"><div class="stat-num">14</div><div class="stat-lbl">Системни групи</div></div>
-      <div class="stat-item"><div class="stat-num">15+</div><div class="stat-lbl">Български доставчици</div></div>
-    </div>
   </div>
 </section>
 
@@ -132,7 +167,7 @@
   <div class="feature-item">
     <div class="feature-icon">🔍</div>
     <div class="feature-text">
-      <strong>NHTSA VIN Lookup</strong>
+      <strong>NHTSA VIN Търсене</strong>
       <span>Официални данни за автомобила</span>
     </div>
   </div>
@@ -151,10 +186,10 @@
     </div>
   </div>
   <div class="feature-item">
-    <div class="feature-icon">🇧🇬</div>
+    <div class="feature-icon">⚡</div>
     <div class="feature-text">
-      <strong>Цени от БГ доставчици</strong>
-      <span>Сравни марки и цени</span>
+      <strong>Партньорски сайт DARUCAR</strong>
+      <span>Провери складова наличност</span>
     </div>
   </div>
 </section>
