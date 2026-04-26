@@ -1,57 +1,43 @@
-// Theme Switching Functionality
 (function() {
-    // Apply theme immediately to prevent FOUC
     function applyThemeImmediately() {
         const savedTheme = localStorage.getItem('theme') || 'dark';
         const html = document.documentElement;
         
-        // Remove existing theme attribute
-        html.removeAttribute('data-theme');
+                html.removeAttribute('data-theme');
         
-        // Set new theme if not dark
-        if (savedTheme !== 'dark') {
+                if (savedTheme !== 'dark') {
             html.setAttribute('data-theme', savedTheme);
         }
         
         return savedTheme;
     }
 
-    // Apply theme immediately before DOM loads
-    applyThemeImmediately();
+        applyThemeImmediately();
 
-    // Initialize theme on page load
-    function initTheme() {
+        function initTheme() {
         const savedTheme = localStorage.getItem('theme') || 'dark';
         updateThemeButtons(savedTheme);
         
-        // Update diagram tooltip background for light theme
-        updateDiagramTooltip(savedTheme);
+                updateDiagramTooltip(savedTheme);
     }
 
-    // Set theme function
-    window.setTheme = function(theme) {
+        window.setTheme = function(theme) {
         const html = document.documentElement;
         
-        // Remove existing theme attribute
-        html.removeAttribute('data-theme');
+                html.removeAttribute('data-theme');
         
-        // Set new theme if not dark
-        if (theme !== 'dark') {
+                if (theme !== 'dark') {
             html.setAttribute('data-theme', theme);
         }
         
-        // Save to localStorage
-        localStorage.setItem('theme', theme);
+                localStorage.setItem('theme', theme);
         
-        // Update button states
-        updateThemeButtons(theme);
+                updateThemeButtons(theme);
         
-        // Update diagram tooltip background for light theme
-        updateDiagramTooltip(theme);
+                updateDiagramTooltip(theme);
     };
 
-    // Update theme button states
-    function updateThemeButtons(activeTheme) {
+        function updateThemeButtons(activeTheme) {
         const darkBtn = document.getElementById('darkThemeBtn');
         const lightBtn = document.getElementById('lightThemeBtn');
         
@@ -64,8 +50,7 @@
         }
     }
 
-    // Update diagram tooltip background based on theme
-    function updateDiagramTooltip(theme) {
+        function updateDiagramTooltip(theme) {
         const tooltip = document.querySelector('.diagram-tooltip');
         if (tooltip) {
             if (theme === 'light') {
@@ -78,8 +63,7 @@
         }
     }
 
-    // Initialize when DOM is ready
-    if (document.readyState === 'loading') {
+        if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initTheme);
     } else {
         initTheme();

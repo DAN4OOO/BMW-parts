@@ -1,14 +1,7 @@
--- ============================================================
---  BMW Parts Catalog — F30 340i Complete Schema
---  Всички имена на български
---  Run: mysql -u root -p < schema.sql
--- ============================================================
-
 DROP DATABASE IF EXISTS bmw_parts;
 CREATE DATABASE bmw_parts CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE bmw_parts;
 
--- ── Cars ──────────────────────────────────────────────────────
 CREATE TABLE cars (
                       id           BIGINT       AUTO_INCREMENT PRIMARY KEY,
                       vin          VARCHAR(17)  NOT NULL UNIQUE,
@@ -23,7 +16,6 @@ CREATE TABLE cars (
                       gearbox      VARCHAR(80)
 );
 
--- ── Part Groups ───────────────────────────────────────────────
 CREATE TABLE part_groups (
                              id         BIGINT       AUTO_INCREMENT PRIMARY KEY,
                              code       VARCHAR(60)  NOT NULL UNIQUE,
@@ -32,7 +24,6 @@ CREATE TABLE part_groups (
                              sort_order INT          NOT NULL DEFAULT 0
 );
 
--- ── Component Groups ──────────────────────────────────────────
 CREATE TABLE component_groups (
                                   id             BIGINT       AUTO_INCREMENT PRIMARY KEY,
                                   group_id       BIGINT       NOT NULL,
@@ -45,7 +36,6 @@ CREATE TABLE component_groups (
                                   CONSTRAINT fk_cg_group FOREIGN KEY (group_id) REFERENCES part_groups(id)
 );
 
--- ── Parts ─────────────────────────────────────────────────────
 CREATE TABLE parts (
                        id                 BIGINT       AUTO_INCREMENT PRIMARY KEY,
                        component_group_id BIGINT       NOT NULL,
@@ -57,7 +47,6 @@ CREATE TABLE parts (
                        CONSTRAINT fk_p_cg FOREIGN KEY (component_group_id) REFERENCES component_groups(id)
 );
 
--- ── Prices ────────────────────────────────────────────────────
 CREATE TABLE part_prices (
                              id        BIGINT        AUTO_INCREMENT PRIMARY KEY,
                              part_id   BIGINT        NOT NULL,
@@ -70,16 +59,10 @@ CREATE TABLE part_prices (
                              CONSTRAINT fk_pp_part FOREIGN KEY (part_id) REFERENCES parts(id)
 );
 
--- ═══════════════════════════════════════════════════════════════
---  АВТОМОБИЛ
--- ═══════════════════════════════════════════════════════════════
 INSERT INTO cars (vin,make,model,series,year,body,engine_code,engine_desc,fuel,gearbox)
 VALUES ('WBA8B3C55JK385192','BMW','3 Series','F30 340i',2018,
         'Седан','B58B30','3.0L Inline-6 Turbo 326к.с.','Бензин','8-степ. автоматична ZF8HP');
 
--- ═══════════════════════════════════════════════════════════════
---  ОСНОВНИ ГРУПИ
--- ═══════════════════════════════════════════════════════════════
 INSERT INTO part_groups (code, name_bg, icon, sort_order) VALUES
                                                               ('engine',          'Двигател',                          '⚙️',   1),
                                                               ('engine-electric', 'Електрическа система на двигателя', '⚡',   2),
@@ -96,9 +79,6 @@ INSERT INTO part_groups (code, name_bg, icon, sort_order) VALUES
                                                               ('bodywork',        'Каросерия',                         '🚗',  13),
                                                               ('vehicle-trim',    'Интериор и екстериор',              '🪑',  14);
 
--- ═══════════════════════════════════════════════════════════════
---  ПОДГРУПИ — 1. ДВИГАТЕЛ
--- ═══════════════════════════════════════════════════════════════
 INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sort_order) VALUES
                                                                                              (1,'eng-block',          'Блок на двигателя',                       NULL,NULL, 1),
                                                                                              (1,'eng-crankshaft',     'Колянов вал и бутала',                    NULL,NULL, 2),
@@ -115,9 +95,6 @@ INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sor
                                                                                              (1,'eng-vacuum',         'Вакуумна система',                        NULL,NULL,13),
                                                                                              (1,'eng-belt-drive',     'Пистов ремък и обтегачи',                NULL,NULL,14);
 
--- ═══════════════════════════════════════════════════════════════
---  ПОДГРУПИ — 2. ЕЛЕКТРИЧЕСКА СИСТЕМА НА ДВИГАТЕЛЯ
--- ═══════════════════════════════════════════════════════════════
 INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sort_order) VALUES
                                                                                              (2,'elec-alternator',    'Генератор',                                      NULL,NULL, 1),
                                                                                              (2,'elec-starter',       'Стартер',                                        NULL,NULL, 2),
@@ -131,9 +108,6 @@ INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sor
                                                                                              (2,'elec-ecu',           'Управляващ блок на двигателя (DME)',             NULL,NULL,10),
                                                                                              (2,'elec-wiring',        'Кабелен сноп на двигателя',                     NULL,NULL,11);
 
--- ═══════════════════════════════════════════════════════════════
---  ПОДГРУПИ — 3. СИСТЕМА ЗА ПОДГОТОВКА НА ГОРИВОТО
--- ═══════════════════════════════════════════════════════════════
 INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sort_order) VALUES
                                                                                              (3,'fuel-injectors',     'Горивни инжектори',                             NULL,NULL, 1),
                                                                                              (3,'fuel-hp-pump',       'Горивна помпа с високо налягане',               NULL,NULL, 2),
@@ -144,9 +118,6 @@ INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sor
                                                                                              (3,'fuel-intercooler',   'Интеркулер (охладител на наддувния въздух)',    NULL,NULL, 7),
                                                                                              (3,'fuel-crankcase',     'Вентилация на картера',                         NULL,NULL, 8);
 
--- ═══════════════════════════════════════════════════════════════
---  ПОДГРУПИ — 4. ГОРИВОСНАБДЯВАНЕ
--- ═══════════════════════════════════════════════════════════════
 INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sort_order) VALUES
                                                                                              (4,'supply-tank',        'Горивен резервоар',                             NULL,NULL, 1),
                                                                                              (4,'supply-lp-pump',     'Горивна помпа ниско налягане (в резервоара)',   NULL,NULL, 2),
@@ -155,9 +126,6 @@ INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sor
                                                                                              (4,'supply-lines',       'Горивопроводи',                                 NULL,NULL, 5),
                                                                                              (4,'supply-evap',        'EVAP система (абсорбатор с активен въглен)',    NULL,NULL, 6);
 
--- ═══════════════════════════════════════════════════════════════
---  ПОДГРУПИ — 5. РАДИАТОР / ОХЛАДИТЕЛНА СИСТЕМА
--- ═══════════════════════════════════════════════════════════════
 INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sort_order) VALUES
                                                                                              (5,'rad-radiator',       'Радиатор',                                      NULL,NULL, 1),
                                                                                              (5,'rad-water-pump',     'Водна помпа и термостат',                       NULL,NULL, 2),
@@ -167,9 +135,6 @@ INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sor
                                                                                              (5,'rad-oil-cooler',     'Маслен охладител',                              NULL,NULL, 6),
                                                                                              (5,'rad-ac-condenser',   'Кондензатор на климатика',                      NULL,NULL, 7);
 
--- ═══════════════════════════════════════════════════════════════
---  ПОДГРУПИ — 6. ИЗПУСКАТЕЛНА СИСТЕМА
--- ═══════════════════════════════════════════════════════════════
 INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sort_order) VALUES
                                                                                              (6,'exh-manifold',       'Изпускателен колектор',                         NULL,NULL, 1),
                                                                                              (6,'exh-catalytic',      'Катализатор',                                   NULL,NULL, 2),
@@ -178,9 +143,6 @@ INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sor
                                                                                              (6,'exh-muffler',        'Заден заглушител',                              NULL,NULL, 5),
                                                                                              (6,'exh-hangers',        'Окачване на изпускателната система',            NULL,NULL, 6);
 
--- ═══════════════════════════════════════════════════════════════
---  ПОДГРУПИ — 7. СЪЕДИНИТЕЛ
--- ═══════════════════════════════════════════════════════════════
 INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sort_order) VALUES
                                                                                              (7,'clutch-assembly',    'Комплект съединител (диск и притискателна плоча)',NULL,NULL, 1),
                                                                                              (7,'clutch-flywheel',    'Двумасов маховик',                              NULL,NULL, 2),
@@ -189,9 +151,6 @@ INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sor
                                                                                              (7,'clutch-slave-cyl',   'Работен цилиндър на съединителя',               NULL,NULL, 5),
                                                                                              (7,'clutch-pedal',       'Педал на съединителя',                          NULL,NULL, 6);
 
--- ═══════════════════════════════════════════════════════════════
---  ПОДГРУПИ — 8. СКОРОСТНА КУТИЯ
--- ═══════════════════════════════════════════════════════════════
 INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sort_order) VALUES
                                                                                              (8,'gearbox-case',       'Корпус на скоростната кутия ZF8HP',             NULL,NULL, 1),
                                                                                              (8,'gearbox-torque-conv','Хидравличен съединител (Торкконвертор)',         NULL,NULL, 2),
@@ -202,9 +161,6 @@ INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sor
                                                                                              (8,'gearbox-halfshaft',  'Полуоси',                                       NULL,NULL, 7),
                                                                                              (8,'gearbox-selector',   'Лост за избор на предавка (Shift by Wire)',     NULL,NULL, 8);
 
--- ═══════════════════════════════════════════════════════════════
---  ПОДГРУПИ — 9. ПРЕДНА ОС
--- ═══════════════════════════════════════════════════════════════
 INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sort_order) VALUES
                                                                                              (9,'front-strut',        'Преден амортисьор / Макферсон стрът',           NULL,NULL, 1),
                                                                                              (9,'front-spring',       'Предна пружина',                                NULL,NULL, 2),
@@ -215,18 +171,12 @@ INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sor
                                                                                              (9,'front-swaybar',      'Стабилизаторна щанга предна ос',               NULL,NULL, 7),
                                                                                              (9,'front-swaybar-link', 'Свързваща щанга на стабилизатора (предна)',    NULL,NULL, 8);
 
--- ═══════════════════════════════════════════════════════════════
---  ПОДГРУПИ — 10. КОРМИЛНО УПРАВЛЕНИЕ
--- ═══════════════════════════════════════════════════════════════
 INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sort_order) VALUES
                                                                                              (10,'steer-rack',        'Кормилна рейка (електрическа)',                 NULL,NULL, 1),
                                                                                              (10,'steer-column',      'Кормилна колона',                               NULL,NULL, 2),
                                                                                              (10,'steer-wheel',       'Волан',                                         NULL,NULL, 3),
                                                                                              (10,'steer-tie-rod',     'Напречна щанга и кормилен накрайник',          NULL,NULL, 4);
 
--- ═══════════════════════════════════════════════════════════════
---  ПОДГРУПИ — 11. ЗАДНА ОС
--- ═══════════════════════════════════════════════════════════════
 INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sort_order) VALUES
                                                                                              (11,'rear-shock',        'Заден амортисьор',                              NULL,NULL, 1),
                                                                                              (11,'rear-spring',       'Задна пружина',                                 NULL,NULL, 2),
@@ -239,9 +189,6 @@ INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sor
                                                                                              (11,'rear-swaybar-link', 'Свързваща щанга на стабилизатора (задна)',    NULL,NULL, 9),
                                                                                              (11,'rear-diff',         'Заден диференциал',                             NULL,NULL,10);
 
--- ═══════════════════════════════════════════════════════════════
---  ПОДГРУПИ — 12. СПИРАЧНА СИСТЕМА
--- ═══════════════════════════════════════════════════════════════
 INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sort_order) VALUES
                                                                                              (12,'brake-front',       'Предни спирачки — диск, апарат, накладки',    NULL,NULL, 1),
                                                                                              (12,'brake-rear',        'Задни спирачки — диск, апарат, накладки',     NULL,NULL, 2),
@@ -252,9 +199,6 @@ INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sor
                                                                                              (12,'brake-epb',         'Електронна ръчна спирачка (EPB)',              NULL,NULL, 7),
                                                                                              (12,'brake-pedal',       'Педал на спирачката',                         NULL,NULL, 8);
 
--- ═══════════════════════════════════════════════════════════════
---  ПОДГРУПИ — 13. КАРОСЕРИЯ
--- ═══════════════════════════════════════════════════════════════
 INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sort_order) VALUES
                                                                                              (13,'body-front-bumper', 'Предна броня',                                  NULL,NULL, 1),
                                                                                              (13,'body-rear-bumper',  'Задна броня',                                   NULL,NULL, 2),
@@ -270,9 +214,6 @@ INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sor
                                                                                              (13,'body-windshield',   'Предно стъкло и чистачки',                    NULL,NULL,12),
                                                                                              (13,'body-seals',        'Уплътнения на вратите и прозорците',          NULL,NULL,13);
 
--- ═══════════════════════════════════════════════════════════════
---  ПОДГРУПИ — 14. ИНТЕРИОР И ЕКСТЕРИОР
--- ═══════════════════════════════════════════════════════════════
 INSERT INTO component_groups (group_id,code,name_bg,diagram_path,realoem_ref,sort_order) VALUES
                                                                                              (14,'trim-dashboard',    'Табло и арматурен панел',                      NULL,NULL, 1),
                                                                                              (14,'trim-seats',        'Седалки',                                       NULL,NULL, 2),

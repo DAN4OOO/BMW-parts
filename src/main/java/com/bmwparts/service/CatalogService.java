@@ -32,7 +32,6 @@ public class CatalogService {
     @Transactional(readOnly = true)
     public Optional<ComponentGroup> getComponentDetail(String code) {
         Optional<ComponentGroup> result = componentGroupRepo.findByCodeWithParts(code);
-        // Force-load prices for each part while still inside the transaction
         result.ifPresent(cg ->
                 cg.getParts().forEach(part -> part.getPrices().size())
         );

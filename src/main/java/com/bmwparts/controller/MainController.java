@@ -29,9 +29,6 @@ public class MainController {
     private final GarageRepository garageRepository;
     private final SearchHistoryRepository searchHistoryRepository;
 
-    // Helper to get current user ID
-
-
     private Long getCurrentUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !(auth.getPrincipal() instanceof UserDetails)) {
@@ -41,7 +38,6 @@ public class MainController {
         return userService.findByEmail(email).map(User::getId).orElse(null);
     }
 
-    // Helper to get current user full name
     private String getCurrentUserName() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !(auth.getPrincipal() instanceof UserDetails)) {
@@ -50,10 +46,9 @@ public class MainController {
         String email = ((UserDetails) auth.getPrincipal()).getUsername();
         return userService.findByEmail(email)
                 .map(User::getFullName)
-                .orElse(email.split("@")[0]); // fallback to email username
+                .orElse(email.split("@")[0]);
     }
 
-    // Make current user available to all templates
     @ModelAttribute("currentUser")
     public User addCurrentUserToModel() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -64,13 +59,11 @@ public class MainController {
         return userService.findByEmail(email).orElse(null);
     }
 
-    // Convenience getter for user's full name
     @ModelAttribute("currentUserName")
     public String addCurrentUserNameToModel() {
         return getCurrentUserName();
     }
 
-    // ── Home / VIN entry ───────────────────────────────────────
     @GetMapping("/")
     public String home(@RequestParam(value = "error", required = false) String error, Model model) {
         if (error != null) {
@@ -79,13 +72,11 @@ public class MainController {
         return "index";
     }
 
-    // ── VIN Decode POST ────────────────────────────────────────
     @PostMapping("/decode")
     public String decodeVin(@RequestParam("vin") String vin) {
         VehicleInfo info = vinDecodeService.decodeVin(vin);
 
         if (info.isValid()) {
-            // Save to search history if user is logged in
             Long userId = getCurrentUserId();
             if (userId != null) {
                 SearchHistory history = SearchHistory.builder()
@@ -94,14 +85,11 @@ public class MainController {
                         .build();
                 searchHistoryRepository.save(history);
             }
-            // Redirect to groups page with VIN as query parameter (PRG pattern)
             return "redirect:/groups?vin=" + UriUtils.encode(vin, StandardCharsets.UTF_8);
         }
-        // On error, redirect to home with error parameter
         return "redirect:/?error=" + UriUtils.encode(info.getErrorMessage(), StandardCharsets.UTF_8);
     }
 
-    // ── Part Groups page (GET) ─────────────────────────────────
     @GetMapping("/groups")
     public String groups(@RequestParam(required = false) String vin, Model model) {
         VehicleInfo info = null;
@@ -118,7 +106,6 @@ public class MainController {
         return "groups";
     }
 
-    // ── Component list for a group ─────────────────────────────
     @GetMapping("/group/{groupCode}")
     public String groupComponents(@PathVariable String groupCode,
                                   @RequestParam(required = false) String vin,
@@ -132,7 +119,6 @@ public class MainController {
         return "components";
     }
 
-    // ── Component detail / parts diagram ──────────────────────
     @GetMapping("/component/{componentCode}")
     public String componentDetail(@PathVariable String componentCode,
                                   @RequestParam(required = false) String vin,
@@ -145,7 +131,6 @@ public class MainController {
         return "part-detail";
     }
 
-    // ── Login page ─────────────────────────────────────────────
     @GetMapping("/login")
     public String loginPage(@RequestParam(value = "error", required = false) String error,
                             @RequestParam(value = "success", required = false) String success,
@@ -155,13 +140,11 @@ public class MainController {
         return "login";
     }
 
-    // ── Register page ──────────────────────────────────────────
     @GetMapping("/register")
     public String registerPage() {
         return "register";
     }
 
-    // ── Handle registration ───────────────────────────────────
     @PostMapping("/do-register")
     public String handleRegistration(@RequestParam String email,
                                      @RequestParam String password,
@@ -176,7 +159,6 @@ public class MainController {
         }
     }
 
-    // ── Garage page ────────────────────────────────────────────
     @GetMapping("/garage")
     public String garagePage(Model model) {
         Long userId = getCurrentUserId();
@@ -188,7 +170,6 @@ public class MainController {
         return "garage";
     }
 
-    // ── Add to garage (API) ────────────────────────────────────
     @PostMapping("/api/garage/add")
     public String addToGarage(@RequestParam String vin) {
         Long userId = getCurrentUserId();
@@ -205,7 +186,6 @@ public class MainController {
         return "redirect:/groups?vin=" + vin;
     }
 
-    // ── Remove from garage (API) ───────────────────────────────
     @PostMapping("/api/garage/remove")
     public String removeFromGarage(@RequestParam String vin) {
         Long userId = getCurrentUserId();
@@ -216,7 +196,6 @@ public class MainController {
         return "redirect:/garage";
     }
 
-    // ── Search history page ────────────────────────────────────
     @GetMapping("/history")
     public String historyPage(Model model) {
         Long userId = getCurrentUserId();
@@ -228,7 +207,6 @@ public class MainController {
         return "history";
     }
 
-    // ── Clear a single history entry ───────────────────────────
     @PostMapping("/api/history/clear")
     public String clearHistoryEntry(@RequestParam Long id) {
         Long userId = getCurrentUserId();
@@ -240,7 +218,6 @@ public class MainController {
         return "redirect:/history";
     }
 
-    // ── Clear all history ───────────────────────────────────────
     @PostMapping("/api/history/clear-all")
     public String clearAllHistory() {
         Long userId = getCurrentUserId();
@@ -251,15 +228,12 @@ public class MainController {
         return "redirect:/history";
     }
 
-    // ── Profile page ─────────────────────────────────────────────
     @GetMapping("/profile")
     public String profilePage(Model model) {
         Long userId = getCurrentUserId();
         if (userId == null) {
             return "redirect:/login";
         }
-        // currentUser and currentUserName are already added via @ModelAttribute
-        // Add stats
         long garageCount = garageRepository.countByUser_Id(userId);
         long historyCount = searchHistoryRepository.countByUser_Id(userId);
         model.addAttribute("garageCount", garageCount);

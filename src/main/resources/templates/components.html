@@ -57,8 +57,7 @@
             class="component-card"
     >
       <div class="comp-diagram-area">
-        <!-- Show real diagram if available, otherwise show placeholder -->
-        <img th:if="${comp.diagramPath != null}"
+                <img th:if="${comp.diagramPath != null}"
              th:src="${comp.diagramPath}"
              class="comp-diagram-img"
              th:alt="${comp.nameBg}"/>

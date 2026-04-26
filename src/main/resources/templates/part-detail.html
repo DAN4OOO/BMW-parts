@@ -79,24 +79,20 @@
 
 <main class="detail-main">
 
-  <!-- ═══ DIAGRAM SECTION ════════════════════════════════════ -->
   <section class="diagram-section">
     <h2 class="section-title">Детайлна диаграма</h2>
 
     <div class="diagram-container">
       <div class="diagram-wrapper" id="diagramWrapper">
 
-        <!-- REAL DIAGRAM: shown when diagram image exists -->
         <div th:if="${component.diagramPath != null}" class="real-diagram-wrap">
           <img th:src="${component.diagramPath}"
                class="real-diagram-img"
                th:alt="${component.nameBg}"
                id="realDiagramImg"/>
-          <!-- Numbered hotspot overlays are injected by diagram.js -->
           <div id="hotspotLayer" class="hotspot-layer"></div>
         </div>
 
-        <!-- PLACEHOLDER: shown when no diagram uploaded yet -->
         <div th:if="${component.diagramPath == null}">
           <svg class="parts-svg" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg"
                id="partsDiagram">
@@ -126,7 +122,6 @@
           </svg>
         </div>
 
-        <!-- Hover tooltip -->
         <div class="diagram-tooltip" id="diagramTooltip" style="display:none">
           <div class="tooltip-num" id="ttNum"></div>
           <div class="tooltip-name" id="ttName"></div>
@@ -134,7 +129,6 @@
         </div>
       </div>
 
-      <!-- Parts Index Legend -->
       <div class="diagram-legend">
         <div class="legend-title">Индекс на частите</div>
         <div class="legend-list">
@@ -152,7 +146,6 @@
     </div>
   </section>
 
-  <!-- ═══ PARTS LIST TABLE ═══════════════════════════════════ -->
   <section class="parts-section">
     <h2 class="section-title">Списък с части и цени</h2>
 
@@ -208,7 +201,6 @@
                     <span th:text="${price.shopName}"></span>
                     <span class="shop-ext-icon">↗</span>
                   </a>
-                  <!-- Bulgarian Site -->
                   <div class="bg-sites" style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap;">
                     <a th:href="@{https://darucar.bg/proverka-na-nalichnost/(part_number=${part.oeNumber}, check}"
                        class="bg-site-link" target="_blank" style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; background: rgba(0,112,193,0.08); border: 1px solid rgba(0,112,193,0.2); border-radius: 4px; font-size: 0.7rem; color: var(--text-sec); text-decoration: none; transition: var(--transition); white-space: nowrap;">
@@ -221,7 +213,6 @@
               <tr th:if="${#lists.isEmpty(part.prices)}">
                 <td colspan="3" class="no-price">
                   <div>Цена при запитване</div>
-                  <!-- Bulgarian Site for parts without prices -->
                   <div class="bg-sites" style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap;">
                     <a href="https://darucar.bg/proverka-na-nalichnost/" 
                        target="_blank"
