@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
@@ -17,16 +18,17 @@
       <span class="brand-logo">BMW</span>
       <span class="brand-sub">Каталог с части</span>
     </a>
+  
     <div class="nav-links" sec:authorize="isAuthenticated()">
       <a href="/garage" class="nav-link">Гараж</a>
       <a href="/history" class="nav-link">История</a>
       <div class="user-menu-dropdown">
-        <button class="user-menu-btn" id="userMenuBtn">
+        <button class="user-menu-btn" id="userMenuBtnAuth">
           <span class="user-avatar" th:text="${currentUserName != null ? currentUserName.substring(0, 1).toUpperCase() : 'U'}"></span>
           <span th:text="${currentUserName != null ? currentUserName : 'Потребител'}"></span>
           <span class="dropdown-arrow">▼</span>
         </button>
-        <div class="dropdown-menu" id="userDropdown">
+        <div class="dropdown-menu" id="userDropdownAuth">
           <div class="dropdown-header" th:if="${currentUser != null}">
             <div class="user-email" th:text="${currentUser.email}"></div>
           </div>
@@ -34,11 +36,11 @@
             <div class="theme-section">
               <div class="theme-title">Тема</div>
               <div class="theme-options">
-                <button class="theme-option" id="darkThemeBtn" onclick="setTheme('dark')">
+                <button class="theme-option" id="darkThemeBtnAuth" onclick="setTheme('dark')">
                   <span class="theme-icon">🌙</span>
                   <span>Тъмна</span>
                 </button>
-                <button class="theme-option" id="lightThemeBtn" onclick="setTheme('light')">
+                <button class="theme-option" id="lightThemeBtnAuth" onclick="setTheme('light')">
                   <span class="theme-icon">☀️</span>
                   <span>Светла</span>
                 </button>
@@ -52,6 +54,7 @@
         </div>
       </div>
     </div>
+    <!--suppress HtmlUnknownAttribute -->
     <div class="nav-links" sec:authorize="!isAuthenticated()">
       <div class="user-menu-dropdown">
         <button class="user-menu-btn" id="userMenuBtn">
@@ -91,7 +94,7 @@
   <div class="hero-content">
     <div class="hero-badge">NHTSA VIN ДЕКОДЕР</div>
     <h1 class="hero-title">
-      <span>Намерете ваш BMW</span>
+      <span>Намерете BMW</span>
       <span class="hero-title-accent">Оригинални части</span>
     </h1>
     <p class="hero-subtitle">
@@ -141,9 +144,15 @@
     </div>
 
     <div class="vin-samples">
-      <span class="sample-label">Примерен BMW VIN:</span>
+      <span class="sample-label">Примерни BMW VIN:</span>
       <button class="sample-btn" onclick="fillVin('WBA8B3C55JK385192')">
         F30 340i — WBA8B3C55JK385192
+      </button>
+      <button class="sample-btn" onclick="fillVin('3MW5R1J05N8C40803')">
+        G20 330i — 3MW5R1J05N8C40803
+      </button>
+      <button class="sample-btn" onclick="fillVin('WBAEV53492KM02168')">
+        E46 330i — WBAEV53492KM02168
       </button>
     </div>
   </div>
@@ -208,6 +217,7 @@
     vinInput.value = vin;
     vinCount.textContent = 17;
     vinCount.style.color = '#00d4ff';
+    vinInput.setCustomValidity('');
   }
 </script>
 </body>

@@ -1,6 +1,3 @@
-// BMW Parts Catalog — main.js
-
-// ── Copy OE Number to clipboard ──────────────────────────────
 function copyOE(btn, oeNumber) {
   navigator.clipboard.writeText(oeNumber).then(() => {
     const orig = btn.textContent;
@@ -11,7 +8,6 @@ function copyOE(btn, oeNumber) {
       btn.classList.remove('copy-flash');
     }, 1200);
   }).catch(() => {
-    // fallback: select text
     const ta = document.createElement('textarea');
     ta.value = oeNumber;
     document.body.appendChild(ta);
@@ -21,11 +17,9 @@ function copyOE(btn, oeNumber) {
   });
 }
 
-// ── Highlight part row from legend click ─────────────────────
 function highlightPart(legendItem) {
   const num = parseInt(legendItem.getAttribute('data-num'));
 
-  // Clear previous
   document.querySelectorAll('.legend-item').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.part-row').forEach(el => el.classList.remove('highlighted'));
   document.querySelectorAll('.svg-part-group').forEach(el => {
@@ -33,7 +27,6 @@ function highlightPart(legendItem) {
     el.style.opacity = '1';
   });
 
-  // Activate
   legendItem.classList.add('active');
 
   const row = document.querySelector(`.part-row[data-num="${num}"]`);
@@ -50,14 +43,12 @@ function highlightPart(legendItem) {
   }
 }
 
-// ── Highlight from table row click ───────────────────────────
 function highlightFromTable(row) {
   const num = parseInt(row.getAttribute('data-num'));
   const legendItem = document.querySelector(`.legend-item[data-num="${num}"]`);
   if (legendItem) highlightPart(legendItem);
 }
 
-// ── Smooth navbar hide on scroll ─────────────────────────────
 let lastScroll = 0;
 const navbar = document.querySelector('.navbar');
 if (navbar) {
@@ -72,7 +63,6 @@ if (navbar) {
   }, { passive: true });
 }
 
-// ── Card hover ripple ─────────────────────────────────────────
 document.querySelectorAll('.group-card, .component-card').forEach(card => {
   card.addEventListener('mousemove', (e) => {
     const rect = card.getBoundingClientRect();
@@ -83,7 +73,6 @@ document.querySelectorAll('.group-card, .component-card').forEach(card => {
   });
 });
 
-// ── VIN form loading state ────────────────────────────────────
 const vinForm = document.getElementById('vinForm');
 const decodeBtn = document.getElementById('decodeBtn');
 if (vinForm) {

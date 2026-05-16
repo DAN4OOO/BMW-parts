@@ -20,7 +20,7 @@
     <div class="breadcrumb">
       <a href="/">Начало</a>
       <span class="bc-sep">›</span>
-      <a th:href="@{/groups(vin=${vin})}">Групи</a>
+      <a th:href="@{/groups(vin=${vin}, carId=${carId})}">Групи</a>
       <span class="bc-sep">›</span>
       <span class="bc-active" th:text="${group.nameBg}"></span>
     </div>
@@ -53,16 +53,15 @@
   <div class="components-grid">
     <a
             th:each="comp : ${components}"
-            th:href="@{/component/{code}(code=${comp.code}, vin=${vin})}"
+            th:href="@{/component/{code}(code=${comp.code}, vin=${vin}, carId=${carId})}"
             class="component-card"
     >
       <div class="comp-diagram-area">
-        <!-- Show real diagram if available, otherwise show placeholder -->
-        <img th:if="${comp.diagramPath != null}"
-             th:src="${comp.diagramPath}"
+                <img th:if="${comp.diagramSrc != null}"
+             th:src="${comp.diagramSrc}"
              class="comp-diagram-img"
              th:alt="${comp.nameBg}"/>
-        <div th:if="${comp.diagramPath == null}" class="comp-diagram-placeholder">
+        <div th:if="${comp.diagramSrc == null}" class="comp-diagram-placeholder">
           <div class="diagram-placeholder-inner">
             <div class="diagram-gear"></div>
             <div class="diagram-dots">
@@ -74,7 +73,6 @@
       </div>
       <div class="comp-info">
         <div class="comp-name" th:text="${comp.nameBg}"></div>
-        <div class="comp-desc" th:if="${comp.descriptionBg != null}" th:text="${comp.descriptionBg}"></div>
         <div class="comp-parts-count">
           <span th:text="${#lists.size(comp.parts)}"></span> части в диаграмата
         </div>

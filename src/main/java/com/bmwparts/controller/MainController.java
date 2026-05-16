@@ -85,13 +85,20 @@ public class MainController {
                         .build();
                 searchHistoryRepository.save(history);
             }
-            return "redirect:/groups?vin=" + UriUtils.encode(vin, StandardCharsets.UTF_8);
+            Integer year = null;
+            try { year = Integer.parseInt(info.getYear()); } catch (NumberFormatException ignored) {}
+            String model = (info.getEngineType() != null && !"unknown".equals(info.getEngineType()))
+                    ? info.getEngineType() : info.getModel();
+            Long carId = catalogService.findMatchingCarId(model, year).orElse(1L);
+            return "redirect:/groups?vin=" + UriUtils.encode(vin, StandardCharsets.UTF_8) + "&carId=" + carId;
         }
         return "redirect:/?error=" + UriUtils.encode(info.getErrorMessage(), StandardCharsets.UTF_8);
     }
 
     @GetMapping("/groups")
-    public String groups(@RequestParam(required = false) String vin, Model model) {
+    public String groups(@RequestParam(required = false) String vin,
+                         @RequestParam(required = false) Long carId,
+                         Model model) {
         VehicleInfo info = null;
         if (vin != null && !vin.isBlank()) {
             info = vinDecodeService.decodeVin(vin);
@@ -102,6 +109,7 @@ public class MainController {
             }
         }
         model.addAttribute("vehicle", info);
+        model.addAttribute("carId", carId);
         model.addAttribute("groups", catalogService.getAllGroups());
         return "groups";
     }
@@ -109,25 +117,29 @@ public class MainController {
     @GetMapping("/group/{groupCode}")
     public String groupComponents(@PathVariable String groupCode,
                                   @RequestParam(required = false) String vin,
+                                  @RequestParam(required = false) Long carId,
                                   Model model) {
         var group = catalogService.getGroupByCode(groupCode);
         if (group.isEmpty()) return "redirect:/groups";
 
         model.addAttribute("group", group.get());
-        model.addAttribute("components", catalogService.getComponentsByGroup(groupCode));
+        model.addAttribute("components", catalogService.getComponentsByGroup(groupCode, carId));
         model.addAttribute("vin", vin);
+        model.addAttribute("carId", carId);
         return "components";
     }
 
     @GetMapping("/component/{componentCode}")
     public String componentDetail(@PathVariable String componentCode,
                                   @RequestParam(required = false) String vin,
+                                  @RequestParam(required = false) Long carId,
                                   Model model) {
-        var component = catalogService.getComponentDetail(componentCode);
+        var component = catalogService.getComponentDetail(componentCode, carId);
         if (component.isEmpty()) return "redirect:/groups";
 
         model.addAttribute("component", component.get());
         model.addAttribute("vin", vin);
+        model.addAttribute("carId", carId);
         return "part-detail";
     }
 

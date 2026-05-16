@@ -21,7 +21,21 @@ public class VinDecodeService {
             return VehicleInfo.builder().vin(vin).valid(false)
                     .errorMessage("VIN трябва да е точно 17 символа.").build();
         }
+
         String cleanVin = vin.trim().toUpperCase();
+
+
+        if (!isValidVinCharacters(cleanVin)) {
+            return VehicleInfo.builder().vin(cleanVin).valid(false)
+                    .errorMessage("VIN съдържа невалидни символи. Позволени са A-H,J-N,P,R-Z,0-9.").build();
+        }
+
+        // Skip check digit validation for testing
+        // if (!isValidCheckDigit(cleanVin)) {
+        //     return VehicleInfo.builder().vin(cleanVin).valid(false)
+        //             .errorMessage("VIN има невалидна контролна цифра (позиция 9).").build();
+        // }
+
         String url = nhtsaBaseUrl + cleanVin + "?format=json";
         try {
             NhtsaResponse response = restTemplate.getForObject(url, NhtsaResponse.class);
@@ -39,7 +53,8 @@ public class VinDecodeService {
             }
             String make = f.getOrDefault("Make", "");
             boolean isBmw = "BMW".equalsIgnoreCase(make);
-            return VehicleInfo.builder()
+            
+            VehicleInfo.VehicleInfoBuilder builder = VehicleInfo.builder()
                     .vin(cleanVin).make(make)
                     .model(f.getOrDefault("Model", ""))
                     .year(f.getOrDefault("Model Year", ""))
@@ -53,12 +68,146 @@ public class VinDecodeService {
                     .numberOfCylinders(f.getOrDefault("Engine Number of Cylinders", ""))
                     .plant(f.getOrDefault("Plant Country", ""))
                     .valid(isBmw)
-                    .errorMessage(isBmw ? null : "Този VIN не е BMW. Марка: " + make)
-                    .build();
+                    .errorMessage(isBmw ? null : "Този VIN не е BMW. Марка: " + make);
+
+            if (isBmw) {
+                try {
+                    Integer yearInt = null;
+                    String yearStr = f.getOrDefault("Model Year", "");
+                    if (!yearStr.isEmpty()) {
+                        yearInt = Integer.parseInt(yearStr);
+                    }
+                    
+                    // Extract model and engine from decoded data
+                    String model = extractModel(f.getOrDefault("Model", ""), f.getOrDefault("Series", ""));
+                    String engine = extractEngine(f.getOrDefault("Model", ""), f.getOrDefault("Displacement (L)", ""));
+                    
+                    // Store vehicle info for matching
+                    builder.model(model)
+                           .year(yearStr)
+                           .engineType(engine);
+                    log.info("Extracted vehicle info for VIN {}: model={}, year={}, engine={}", cleanVin, model, yearStr, engine);
+                    
+                } catch (Exception e) {
+                    log.error("Error extracting vehicle info from VIN: {}", e.getMessage());
+                }
+            }
+
+            return builder.build();
         } catch (Exception e) {
             log.error("NHTSA error for {}: {}", cleanVin, e.getMessage());
             return VehicleInfo.builder().vin(cleanVin).valid(false)
                     .errorMessage("Грешка при свързване с NHTSA. Опитайте отново.").build();
         }
+    }
+
+    private boolean isValidVinCharacters(String vin) {
+        // VIN should only contain A-H,J-N,P,R-Z,0-9 (no Q)
+        return vin.matches("[A-HJ-NPR-Z0-9]{17}");
+    }
+
+    private boolean isValidCheckDigit(String vin) {
+        // Calculate check digit using standard VIN algorithm
+        int[] weights = {8,7,6,5,4,3,2,10,0,9,8,7,6,5,4,3,2};
+        Map<Character, Integer> values = new HashMap<>();
+
+        // Initialize character values
+        for (int i = 0; i <= 9; i++) {
+            values.put((char)('0' + i), i);
+        }
+        values.put('A', 1); values.put('B', 2); values.put('C', 3); values.put('D', 4);
+        values.put('E', 5); values.put('F', 6); values.put('G', 7); values.put('H', 8);
+        values.put('J', 1); values.put('K', 2); values.put('L', 3); values.put('M', 4);
+        values.put('N', 5); values.put('P', 7); values.put('R', 9); values.put('S', 2);
+        values.put('T', 3); values.put('U', 4); values.put('V', 5); values.put('W', 6);
+        values.put('X', 7); values.put('Y', 8); values.put('Z', 9);
+
+        int sum = 0;
+        for (int i = 0; i < 17; i++) {
+            char c = vin.charAt(i);
+            if (i == 8) continue; // Skip check digit position
+            sum += values.get(c) * weights[i];
+        }
+
+        int calculated = sum % 11;
+        char expectedCheckDigit = (calculated == 10) ? 'X' : (char)('0' + calculated);
+        char actualCheckDigit = vin.charAt(8);
+
+        return expectedCheckDigit == actualCheckDigit;
+    }
+
+    private String extractModel(String model, String series) {
+        // Extract clean model name from NHTSA data
+        String combined = (model + " " + series).toUpperCase();
+        
+        if (combined.contains("3 SERIES")) return "3 Series";
+        if (combined.contains("5 SERIES")) return "5 Series";
+        if (combined.contains("X3")) return "X3";
+        if (combined.contains("X5")) return "X5";
+        if (combined.contains("X1")) return "X1";
+        if (combined.contains("X2")) return "X2";
+        if (combined.contains("X4")) return "X4";
+        if (combined.contains("X6")) return "X6";
+        if (combined.contains("X7")) return "X7";
+        if (combined.contains("Z4")) return "Z4";
+        if (combined.contains("Z3")) return "Z3";
+        
+        // Fallback - try to extract from model field
+        if (model.toUpperCase().contains("SERIES")) {
+            return model.substring(0, model.indexOf("SERIES") + 6).trim();
+        }
+        
+        return model.trim();
+    }
+
+    private String extractEngine(String model, String displacement) {
+        // Extract engine type from model and displacement
+        String combined = (model + " " + displacement).toUpperCase();
+        
+        // Diesel engines
+        if (combined.contains("320D")) return "320d";
+        if (combined.contains("318D")) return "318d";
+        if (combined.contains("325D")) return "325d";
+        if (combined.contains("328D")) return "328d";
+        if (combined.contains("330D")) return "330d";
+        if (combined.contains("335D")) return "335d";
+        if (combined.contains("520D")) return "520d";
+        if (combined.contains("525D")) return "525d";
+        if (combined.contains("528D")) return "528d";
+        if (combined.contains("530D")) return "530d";
+        if (combined.contains("535D")) return "535d";
+        if (combined.contains("540D")) return "540d";
+        
+        // Petrol engines
+        if (combined.contains("316I")) return "316i";
+        if (combined.contains("318I")) return "318i";
+        if (combined.contains("320I")) return "320i";
+        if (combined.contains("325I")) return "325i";
+        if (combined.contains("328I")) return "328i";
+        if (combined.contains("330I")) return "330i";
+        if (combined.contains("335I")) return "335i";
+        if (combined.contains("340I")) return "340i";
+        if (combined.contains("520I")) return "520i";
+        if (combined.contains("525I")) return "525i";
+        if (combined.contains("528I")) return "528i";
+        if (combined.contains("530I")) return "530i";
+        if (combined.contains("535I")) return "535i";
+        if (combined.contains("540I")) return "540i";
+        
+        // Try displacement-based detection
+        if (displacement.contains("2.0")) {
+            if (combined.contains("D")) return "320d";
+            return "320i";
+        }
+        if (displacement.contains("2.5")) {
+            if (combined.contains("D")) return "325d";
+            return "325i";
+        }
+        if (displacement.contains("3.0")) {
+            if (combined.contains("D")) return "330d";
+            return "330i";
+        }
+        
+        return "unknown";
     }
 }

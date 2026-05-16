@@ -38,16 +38,27 @@
     };
 
         function updateThemeButtons(activeTheme) {
-        const darkBtn = document.getElementById('darkThemeBtn');
-        const lightBtn = document.getElementById('lightThemeBtn');
+        // Handle both authenticated and non-authenticated theme buttons
+        const darkBtns = [
+            document.getElementById('darkThemeBtn'),
+            document.getElementById('darkThemeBtnAuth')
+        ];
+        const lightBtns = [
+            document.getElementById('lightThemeBtn'),
+            document.getElementById('lightThemeBtnAuth')
+        ];
         
-        if (darkBtn) {
-            darkBtn.classList.toggle('active', activeTheme === 'dark');
-        }
+        darkBtns.forEach(btn => {
+            if (btn) {
+                btn.classList.toggle('active', activeTheme === 'dark');
+            }
+        });
         
-        if (lightBtn) {
-            lightBtn.classList.toggle('active', activeTheme === 'light');
-        }
+        lightBtns.forEach(btn => {
+            if (btn) {
+                btn.classList.toggle('active', activeTheme === 'light');
+            }
+        });
     }
 
         function updateDiagramTooltip(theme) {

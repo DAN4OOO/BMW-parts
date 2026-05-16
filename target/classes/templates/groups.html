@@ -58,7 +58,6 @@
   </div>
 </nav>
 
-<!-- Vehicle Banner -->
 <div class="vehicle-banner" th:if="${vehicle != null and vehicle.valid}">
   <div class="vb-inner">
     <div class="vb-roundel">
@@ -134,7 +133,6 @@
   </div>
 </div>
 
-<!-- Page Header -->
 <div class="page-header">
   <div class="page-header-inner">
     <h1 class="page-title">Изберете системна група</h1>
@@ -142,21 +140,18 @@
   </div>
 </div>
 
-<!-- Groups Grid -->
 <main class="groups-main">
   <div class="groups-grid">
     <a
             th:each="group : ${groups}"
-            th:href="@{/group/{code}(code=${group.code}, vin=${vehicle != null ? vehicle.vin : ''})}"
+            th:href="@{/group/{code}(code=${group.code}, vin=${vehicle != null ? vehicle.vin : ''}, carId=${carId})}"
             class="group-card"
             th:attr="data-group=${group.code}"
     >
       <div class="group-card-inner">
         <div class="group-icon" th:text="${group.icon}"></div>
         <div class="group-name" th:text="${group.nameBg}"></div>
-        <div class="group-count">
-          <span th:text="${#lists.size(group.componentGroups)}"></span> компонента
-        </div>
+        <div class="group-count">Виж диаграми →</div>
         <div class="group-arrow">→</div>
       </div>
       <div class="group-card-shine"></div>

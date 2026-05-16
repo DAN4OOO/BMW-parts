@@ -11,12 +11,10 @@ import java.util.Optional;
 @Repository
 public interface ComponentGroupRepository extends JpaRepository<ComponentGroup, Long> {
 
-    List<ComponentGroup> findByGroupCodeOrderBySortOrderAsc(String groupCode);
+    List<ComponentGroup> findByCarIdAndGroupCodeOrderBySortOrderAsc(Long carId, String groupCode);
 
-    Optional<ComponentGroup> findByCode(String code);
+    List<ComponentGroup> findByCarIdOrderBySortOrderAsc(Long carId);
 
-    @Query("SELECT DISTINCT cg FROM ComponentGroup cg " +
-            "LEFT JOIN FETCH cg.parts " +
-            "WHERE cg.code = :code")
-    Optional<ComponentGroup> findByCodeWithParts(@Param("code") String code);
+    @Query("SELECT DISTINCT cg FROM ComponentGroup cg LEFT JOIN FETCH cg.parts LEFT JOIN FETCH cg.car LEFT JOIN FETCH cg.group WHERE cg.carId = :carId AND cg.code = :code")
+    Optional<ComponentGroup> findByCarIdAndCodeWithParts(@Param("carId") Long carId, @Param("code") String code);
 }

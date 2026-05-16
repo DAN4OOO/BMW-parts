@@ -2,7 +2,6 @@ package com.bmwparts.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.Set;
 
 @Entity
 @Table(name = "parts")
@@ -17,6 +16,9 @@ public class Part {
     @JoinColumn(name = "component_group_id", nullable = false)
     private ComponentGroup componentGroup;
 
+    @Column(name = "car_id", nullable = false)
+    private Long carId;
+
     @Column(name = "diagram_number", nullable = false)
     private int diagramNumber;
 
@@ -26,12 +28,9 @@ public class Part {
     @Column(name = "oe_number", nullable = false, length = 60)
     private String oeNumber;
 
-    @Column(nullable = false)
+    @Column
     private int qty;
 
     @Column(name = "notes_bg", columnDefinition = "TEXT")
     private String notesBg;
-
-    @OneToMany(mappedBy = "part", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<PartPrice> prices;
 }

@@ -1,263 +1,181 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title th:text="${component.nameBg} + ' — BMW Каталог с части'">Детайл на част</title>
-  <link rel="stylesheet" th:href="@{/css/main.css}"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <script th:src="@{/js/theme.js}"></script>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${component.nameBg} + ' — BMW Каталог с части'">Детайл на част</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <script th:src="@{/js/theme.js}"></script>
 </head>
 <body class="page-detail">
 
 <nav class="navbar">
-  <div class="nav-inner">
-    <a class="brand" href="/">
-      <span class="brand-logo">BMW</span>
-      <span class="brand-sub">Каталог с части</span>
-    </a>
-    <div class="breadcrumb">
-      <a href="/">Начало</a>
-      <span class="bc-sep">›</span>
-      <a th:href="@{/groups(vin=${vin})}">Групи</a>
-      <span class="bc-sep">›</span>
-      <a th:href="@{/group/{code}(code=${component.group.code}, vin=${vin})}"
-         th:text="${component.group.nameBg}"></a>
-      <span class="bc-sep">›</span>
-      <span class="bc-active" th:text="${component.nameBg}"></span>
-    </div>
-    <div class="nav-links" sec:authorize="isAuthenticated()">
-      <a href="/garage" class="nav-link">Гараж</a>
-      <a href="/history" class="nav-link">История</a>
-      <div class="user-menu-dropdown">
-        <button class="user-menu-btn" id="userMenuBtn">
-          <span class="user-avatar" th:text="${currentUserName != null ? currentUserName.substring(0, 1).toUpperCase() : 'U'}"></span>
-          <span th:text="${currentUserName != null ? currentUserName : 'Потребител'}"></span>
-          <span class="dropdown-arrow">▼</span>
-        </button>
-        <div class="dropdown-menu" id="userDropdown">
-          <div class="dropdown-header" th:if="${currentUser != null}">
-            <div class="user-email" th:text="${currentUser.email}"></div>
-          </div>
-          <div class="dropdown-header">
-            <div class="theme-section">
-              <div class="theme-title">Тема</div>
-              <div class="theme-options">
-                <button class="theme-option" id="darkThemeBtn" onclick="setTheme('dark')">
-                  <span class="theme-icon">🌙</span>
-                  <span>Тъмна</span>
-                </button>
-                <button class="theme-option" id="lightThemeBtn" onclick="setTheme('light')">
-                  <span class="theme-icon">☀️</span>
-                  <span>Светла</span>
-                </button>
-              </div>
-            </div>
-          </div>
-          <a href="/profile" class="dropdown-item">Профил</a>
-          <form th:action="@{/logout}" method="post">
-            <button type="submit" class="dropdown-item logout-btn">Изход</button>
-          </form>
+    <div class="nav-inner">
+        <a class="brand" href="/">
+            <span class="brand-logo">BMW</span>
+            <span class="brand-sub">Каталог с части</span>
+        </a>
+        <div class="breadcrumb">
+            <a href="/">Начало</a>
+            <span class="bc-sep">›</span>
+            <a th:href="@{/groups(vin=${vin}, carId=${carId})}">Групи</a>
+            <span class="bc-sep">›</span>
+            <a th:href="@{/group/{code}(code=${component.group.code}, vin=${vin}, carId=${carId})}"
+               th:text="${component.group.nameBg}"></a>
+            <span class="bc-sep">›</span>
+            <span class="bc-active" th:text="${component.nameBg}"></span>
         </div>
-      </div>
+        <div class="nav-links" sec:authorize="isAuthenticated()">
+            <a href="/garage" class="nav-link">Гараж</a>
+            <a href="/history" class="nav-link">История</a>
+            <div class="user-menu-dropdown">
+                <button class="user-menu-btn" id="userMenuBtn">
+                    <span class="user-avatar" th:text="${currentUserName != null ? currentUserName.substring(0, 1).toUpperCase() : 'U'}"></span>
+                    <span th:text="${currentUserName != null ? currentUserName : 'Потребител'}"></span>
+                    <span class="dropdown-arrow">▼</span>
+                </button>
+                <div class="dropdown-menu" id="userDropdown">
+                    <div class="dropdown-header" th:if="${currentUser != null}">
+                        <div class="user-email" th:text="${currentUser.email}"></div>
+                    </div>
+                    <div class="dropdown-header">
+                        <div class="theme-section">
+                            <div class="theme-title">Тема</div>
+                            <div class="theme-options">
+                                <button class="theme-option" id="darkThemeBtn" onclick="setTheme('dark')">
+                                    <span class="theme-icon">🌙</span>
+                                    <span>Тъмна</span>
+                                </button>
+                                <button class="theme-option" id="lightThemeBtn" onclick="setTheme('light')">
+                                    <span class="theme-icon">☀️</span>
+                                    <span>Светла</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="/profile" class="dropdown-item">Профил</a>
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="dropdown-item logout-btn">Изход</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="nav-links" sec:authorize="!isAuthenticated()">
+            <a href="/login" class="nav-link">Вход</a>
+            <a href="/register" class="nav-link">Регистрация</a>
+        </div>
     </div>
-    <div class="nav-links" sec:authorize="!isAuthenticated()">
-      <a href="/login" class="nav-link">Вход</a>
-      <a href="/register" class="nav-link">Регистрация</a>
-    </div>
-  </div>
 </nav>
 
 <div class="detail-header">
-  <div class="detail-header-inner">
-    <div class="detail-group-badge" th:text="${component.group.icon} + ' ' + ${component.group.nameBg}"></div>
-    <h1 class="detail-title" th:text="${component.nameBg}"></h1>
-    <p class="detail-desc" th:if="${component.descriptionBg != null}" th:text="${component.descriptionBg}"></p>
-  </div>
+    <div class="detail-header-inner">
+        <div class="detail-group-badge" th:text="${component.group.icon} + ' ' + ${component.group.nameBg}"></div>
+        <h1 class="detail-title" th:text="${component.nameBg}"></h1>
+    </div>
 </div>
 
 <main class="detail-main">
 
-  <!-- ═══ DIAGRAM SECTION ════════════════════════════════════ -->
-  <section class="diagram-section">
-    <h2 class="section-title">Детайлна диаграма</h2>
+    <section class="diagram-section">
+        <h2 class="section-title">Детайлна диаграма</h2>
 
-    <div class="diagram-container">
-      <div class="diagram-wrapper" id="diagramWrapper">
+        <div class="diagram-container">
+            <div class="diagram-wrapper">
+                <div th:if="${component.diagramSrc != null}">
+                    <img th:src="${component.diagramSrc}"
+                         class="real-diagram-img"
+                         th:alt="${component.nameBg}"/>
+                </div>
+                <div th:if="${component.diagramSrc == null}" class="diagram-no-image">
+                    <span>Диаграмата ще бъде добавена скоро</span>
+                </div>
+            </div>
 
-        <!-- REAL DIAGRAM: shown when diagram image exists -->
-        <div th:if="${component.diagramPath != null}" class="real-diagram-wrap">
-          <img th:src="${component.diagramPath}"
-               class="real-diagram-img"
-               th:alt="${component.nameBg}"
-               id="realDiagramImg"/>
-          <!-- Numbered hotspot overlays are injected by diagram.js -->
-          <div id="hotspotLayer" class="hotspot-layer"></div>
+            <div class="diagram-legend">
+                <div class="legend-title">Индекс на частите</div>
+                <div class="legend-list">
+                    <div
+                            class="legend-item"
+                            th:each="part : ${component.parts}"
+                            th:attr="data-num=${part.diagramNumber}"
+                            onclick="highlightPart(this)"
+                    >
+                        <div class="legend-num" th:text="${part.diagramNumber}"></div>
+                        <div class="legend-name" th:text="${part.nameBg}"></div>
+                    </div>
+                </div>
+            </div>
         </div>
+    </section>
 
-        <!-- PLACEHOLDER: shown when no diagram uploaded yet -->
-        <div th:if="${component.diagramPath == null}">
-          <svg class="parts-svg" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg"
-               id="partsDiagram">
-            <defs>
-              <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:#1a3a5c;stop-opacity:1"/>
-                <stop offset="100%" style="stop-color:#0d2137;stop-opacity:1"/>
-              </linearGradient>
-            </defs>
-            <rect width="800" height="500" fill="#0a1628" rx="8"/>
-            <rect width="800" height="500" fill="url(#blueGrad)" rx="8" opacity="0.5"/>
-            <g stroke="#1e3a5f" stroke-width="0.5" opacity="0.4">
-              <line x1="0" y1="100" x2="800" y2="100"/><line x1="0" y1="200" x2="800" y2="200"/>
-              <line x1="0" y1="300" x2="800" y2="300"/><line x1="0" y1="400" x2="800" y2="400"/>
-              <line x1="100" y1="0" x2="100" y2="500"/><line x1="200" y1="0" x2="200" y2="500"/>
-              <line x1="300" y1="0" x2="300" y2="500"/><line x1="400" y1="0" x2="400" y2="500"/>
-              <line x1="500" y1="0" x2="500" y2="500"/><line x1="600" y1="0" x2="600" y2="500"/>
-              <line x1="700" y1="0" x2="700" y2="500"/>
-            </g>
-            <g id="svgParts"></g>
-            <text x="400" y="30" fill="#00d4ff" font-family="Rajdhani" font-size="16"
-                  font-weight="600" text-anchor="middle" letter-spacing="2"
-                  th:text="${component.nameBg}">КОМПОНЕНТ</text>
-            <text x="400" y="52" fill="#4a8db7" font-family="Inter" font-size="12"
-                  text-anchor="middle">Диаграмата ще бъде добавена скоро</text>
-            <line x1="50" y1="62" x2="750" y2="62" stroke="#1e3a5f" stroke-width="1"/>
-          </svg>
-        </div>
+    <section class="parts-section">
+        <h2 class="section-title">Списък с части</h2>
 
-        <!-- Hover tooltip -->
-        <div class="diagram-tooltip" id="diagramTooltip" style="display:none">
-          <div class="tooltip-num" id="ttNum"></div>
-          <div class="tooltip-name" id="ttName"></div>
-          <div class="tooltip-oe" id="ttOe"></div>
-        </div>
-      </div>
+        <div class="parts-table-wrap">
+            <table class="parts-table">
+                <thead>
+                <tr>
+                    <th class="th-num">#</th>
+                    <th class="th-name">Наименование на частта</th>
+                    <th class="th-oe">OE Номер</th>
 
-      <!-- Parts Index Legend -->
-      <div class="diagram-legend">
-        <div class="legend-title">Индекс на частите</div>
-        <div class="legend-list">
-          <div
-                  class="legend-item"
-                  th:each="part : ${component.parts}"
-                  th:attr="data-num=${part.diagramNumber}"
-                  onclick="highlightPart(this)"
-          >
-            <div class="legend-num" th:text="${part.diagramNumber}"></div>
-            <div class="legend-name" th:text="${part.nameBg}"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+                    <th class="th-shop">Български доставчик</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="part : ${component.parts}"
+                    th:attr="data-num=${part.diagramNumber}"
+                    class="part-row"
+                    onclick="highlightFromTable(this)">
 
-  <!-- ═══ PARTS LIST TABLE ═══════════════════════════════════ -->
-  <section class="parts-section">
-    <h2 class="section-title">Списък с части и цени</h2>
+                    <td class="td-num">
+                        <div class="part-num-badge" th:text="${part.diagramNumber}"></div>
+                    </td>
+                    <td class="td-name">
+                        <div class="part-name-main" th:text="${part.nameBg}"></div>
+                    </td>
+                    <td class="td-oe">
+                        <code class="oe-code" th:text="${part.oeNumber}"></code>
+                        <button class="copy-btn" th:attr="onclick='copyOE(this, \'' + ${part.oeNumber} + '\')'">⎘</button>
+                    </td>
 
-    <div class="parts-table-wrap">
-      <table class="parts-table">
-        <thead>
-        <tr>
-          <th class="th-num">#</th>
-          <th class="th-name">Наименование на частта</th>
-          <th class="th-oe">OE Номер</th>
-          <th class="th-brand">Марка</th>
-          <th class="th-price">Ценови диапазон</th>
-          <th class="th-shop">Български доставчик</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="part : ${component.parts}"
-            th:attr="data-num=${part.diagramNumber}"
-            class="part-row"
-            onclick="highlightFromTable(this)">
 
-          <td class="td-num">
-            <div class="part-num-badge" th:text="${part.diagramNumber}"></div>
-          </td>
-          <td class="td-name">
-            <div class="part-name-main" th:text="${part.nameBg}"></div>
-            <div class="part-name-desc" th:if="${part.notesBg != null and !#strings.isEmpty(part.notesBg)}"
-                 th:text="${part.notesBg}"></div>
-          </td>
-          <td class="td-oe">
-            <code class="oe-code" th:text="${part.oeNumber}"></code>
-            <button class="copy-btn" th:attr="onclick='copyOE(this, \'' + ${part.oeNumber} + '\')'">⎘</button>
-          </td>
 
-          <td colspan="3" class="td-brands-cell">
-            <table class="brands-table">
-              <tr th:each="price : ${part.prices}">
-                <td class="brand-cell">
-                  <span class="brand-tag" th:text="${price.brand}"></span>
-                </td>
-                <td class="price-cell">
-                      <span class="price-range">
-                        <span th:text="${price.priceMin}"></span>
-                        –
-                        <span th:text="${price.priceMax}"></span>
-                        <span class="currency" th:text="${price.currency}"></span>
-                      </span>
-                </td>
-                <td class="shop-cell">
-                  <a th:href="${price.shopUrl}" class="shop-link"
-                     target="_blank" rel="noopener noreferrer">
-                    <span class="shop-flag">🇧🇬</span>
-                    <span th:text="${price.shopName}"></span>
-                    <span class="shop-ext-icon">↗</span>
-                  </a>
-                  <!-- Bulgarian Site -->
-                  <div class="bg-sites" style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap;">
-                    <a th:href="@{https://darucar.bg/proverka-na-nalichnost/(part_number=${part.oeNumber}, check}"
-                       class="bg-site-link" target="_blank" style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; background: rgba(0,112,193,0.08); border: 1px solid rgba(0,112,193,0.2); border-radius: 4px; font-size: 0.7rem; color: var(--text-sec); text-decoration: none; transition: var(--transition); white-space: nowrap;">
-                      <span style="color: var(--accent-light); font-weight: 500;">🇧🇬</span>
-                      <span class="bg-site-name">Daru Car</span>
-                    </a>
-                  </div>
-                </td>
-              </tr>
-              <tr th:if="${#lists.isEmpty(part.prices)}">
-                <td colspan="3" class="no-price">
-                  <div>Цена при запитване</div>
-                  <!-- Bulgarian Site for parts without prices -->
-                  <div class="bg-sites" style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap;">
-                    <a href="https://darucar.bg/proverka-na-nalichnost/" 
-                       target="_blank"
-                       class="bg-site-link" style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; background: rgba(0,112,193,0.08); border: 1px solid rgba(0,112,193,0.2); border-radius: 4px; font-size: 0.7rem; color: var(--text-sec); text-decoration: none; transition: var(--transition); white-space: nowrap;">
-                      <span style="color: var(--accent-light); font-weight: 500;">🇧🇬</span>
-                      <span class="bg-site-name">Daru Car</span>
-                    </a>
-                  </div>
-                </td>
-              </tr>
+                    <td class="td-shop">
+                        <div>Цена при запитване</div>
+                        <div class="bg-sites" style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap;">
+                            <a href="https://darucar.bg/proverka-na-nalichnost/"
+                               target="_blank"
+                               class="bg-site-link" style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; background: rgba(0,112,193,0.08); border: 1px solid rgba(0,112,193,0.2); border-radius: 4px; font-size: 0.7rem; color: var(--text-sec); text-decoration: none; transition: var(--transition); white-space: nowrap;">
+                                <span style="color: var(--accent-light); font-weight: 500;">🇧🇬</span>
+                                <span class="bg-site-name">Daru Car</span>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
             </table>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+        </div>
+    </section>
 
-  <div class="detail-back-row">
-    <a th:href="@{/group/{code}(code=${component.group.code}, vin=${vin})}" class="btn-back">
-      ← Обратно към <span th:text="${component.group.nameBg}"></span>
-    </a>
-  </div>
+    <div class="detail-back-row">
+        <a th:href="@{/group/{code}(code=${component.group.code}, vin=${vin}, carId=${carId})}" class="btn-back">
+            ← Обратно към <span th:text="${component.group.nameBg}"></span>
+        </a>
+    </div>
 
 </main>
 
 <footer class="site-footer">
-  <div class="footer-inner">
-    <span>BMW Каталог с части © 2024</span>
-    <span>OE номерата са за справка. Проверете съвместимостта преди поръчка.</span>
-  </div>
+    <div class="footer-inner">
+        <span>BMW Каталог с части © 2024</span>
+        <span>OE номерата са за справка. Проверете съвместимостта преди поръчка.</span>
+    </div>
 </footer>
 
 <script th:src="@{/js/main.js}"></script>
-<script th:src="@{/js/diagram.js}"></script>
-
 
 
 </body>

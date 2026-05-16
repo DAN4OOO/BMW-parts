@@ -21,4 +21,5 @@ public class VehicleInfo {
     private String errorCode;
     private String errorMessage;
     private boolean valid;
+    private String engineType;
 }

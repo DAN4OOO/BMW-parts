@@ -1,12 +1,6 @@
-/* ═══════════════════════════════════════════════════════════════
-   BMW PARTS CATALOG — MAIN STYLESHEET
-   Theme: Precision Industrial Dark
-   Font: Rajdhani (headings) + Inter (body)
-   ═══════════════════════════════════════════════════════════════ */
 
-/* ── CSS Variables ──────────────────────────────────────────── */
 :root {
-  /* Dark Theme (default) */
+
   --bg-deep:      #050d1a;
   --bg-dark:      #080f1f;
   --bg-card:      #0c1627;
@@ -33,7 +27,7 @@
   --transition:   all 0.25s cubic-bezier(0.4,0,0.2,1);
 }
 
-/* Light Theme */
+
 [data-theme="light"] {
   --bg-deep:      #f8fafc;
   --bg-dark:      #ffffff;
