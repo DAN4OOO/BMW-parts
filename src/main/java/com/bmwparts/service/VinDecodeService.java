@@ -79,8 +79,11 @@ public class VinDecodeService {
                     }
                     
                     // Extract model and engine from decoded data
-                    String model = extractModel(f.getOrDefault("Model", ""), f.getOrDefault("Series", ""));
-                    String engine = extractEngine(f.getOrDefault("Model", ""), f.getOrDefault("Displacement (L)", ""));
+                    String nhtsaModel  = f.getOrDefault("Model", "");
+                    String nhtsaSeries = f.getOrDefault("Series", "");
+                    String nhtsaDisp   = f.getOrDefault("Displacement (L)", "");
+                    String model  = extractModel(nhtsaModel, nhtsaSeries);
+                    String engine = extractEngine(nhtsaModel, nhtsaSeries, nhtsaDisp);
                     
                     // Store vehicle info for matching
                     builder.model(model)
@@ -160,10 +163,33 @@ public class VinDecodeService {
         return model.trim();
     }
 
-    private String extractEngine(String model, String displacement) {
-        // Extract engine type from model and displacement
-        String combined = (model + " " + displacement).toUpperCase();
-        
+    private String extractEngine(String model, String series, String displacement) {
+        // Combine all three NHTSA fields — engine variant can appear in any of them
+        String combined = (model + " " + series + " " + displacement).toUpperCase();
+
+        // X-series: NHTSA returns "xDrive28i", "sDrive20d" etc. in Model or Series
+        if (combined.contains("XDRIVE") || combined.contains("SDRIVE")) {
+            if (combined.contains("M50I")) return "M50i";
+            if (combined.contains("M40I")) return "M40i";
+            if (combined.contains("M35I")) return "M35i";
+            if (combined.contains("50I"))  return "50i";
+            if (combined.contains("50D"))  return "50d";
+            if (combined.contains("40I"))  return "40i";
+            if (combined.contains("40D"))  return "40d";
+            if (combined.contains("35I"))  return "35i";
+            if (combined.contains("35D"))  return "35d";
+            if (combined.contains("30I"))  return "30i";
+            if (combined.contains("30D"))  return "30d";
+            if (combined.contains("28I"))  return "28i";
+            if (combined.contains("28D"))  return "28d";
+            if (combined.contains("25I"))  return "25i";
+            if (combined.contains("25D"))  return "25d";
+            if (combined.contains("20I"))  return "20i";
+            if (combined.contains("20D"))  return "20d";
+            if (combined.contains("18I"))  return "18i";
+            if (combined.contains("18D"))  return "18d";
+        }
+
         // Diesel engines
         if (combined.contains("320D")) return "320d";
         if (combined.contains("318D")) return "318d";
@@ -193,20 +219,6 @@ public class VinDecodeService {
         if (combined.contains("530I")) return "530i";
         if (combined.contains("535I")) return "535i";
         if (combined.contains("540I")) return "540i";
-        
-        // Try displacement-based detection
-        if (displacement.contains("2.0")) {
-            if (combined.contains("D")) return "320d";
-            return "320i";
-        }
-        if (displacement.contains("2.5")) {
-            if (combined.contains("D")) return "325d";
-            return "325i";
-        }
-        if (displacement.contains("3.0")) {
-            if (combined.contains("D")) return "330d";
-            return "330i";
-        }
         
         return "unknown";
     }

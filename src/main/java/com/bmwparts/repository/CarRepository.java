@@ -12,4 +12,7 @@ public interface CarRepository extends JpaRepository<Car, Long> {
 
     @Query("SELECT c FROM Car c WHERE c.model = :model AND (c.yearStart IS NULL OR c.yearStart <= :year) AND (c.yearEnd IS NULL OR c.yearEnd >= :year)")
     List<Car> findByModelAndYear(@Param("model") String model, @Param("year") int year);
+
+    @Query("SELECT c FROM Car c WHERE c.diagramsPath LIKE CONCAT('%', :pattern, '%') AND (c.yearStart IS NULL OR c.yearStart <= :year) AND (c.yearEnd IS NULL OR c.yearEnd >= :year)")
+    List<Car> findByDiagramsPathPatternAndYear(@Param("pattern") String pattern, @Param("year") int year);
 }

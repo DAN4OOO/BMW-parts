@@ -68,7 +68,7 @@
         <span th:text="${vehicle.year}"></span>
         <span th:text="${vehicle.make}"></span>
         <span th:text="${vehicle.model}"></span>
-        <span th:if="${vehicle.series != null}" th:text="'(' + ${vehicle.series} + ')'"></span>
+        <span th:if="${vehicle.series != null and !vehicle.series.isEmpty()}" th:text="'(' + ${vehicle.series} + ')'"></span>
       </div>
       <div class="vb-details">
           <span th:if="${vehicle.engineDisplacement != null}">

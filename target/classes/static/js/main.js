@@ -22,10 +22,6 @@ function highlightPart(legendItem) {
 
   document.querySelectorAll('.legend-item').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.part-row').forEach(el => el.classList.remove('highlighted'));
-  document.querySelectorAll('.svg-part-group').forEach(el => {
-    el.style.filter = '';
-    el.style.opacity = '1';
-  });
 
   legendItem.classList.add('active');
 
@@ -33,13 +29,6 @@ function highlightPart(legendItem) {
   if (row) {
     row.classList.add('highlighted');
     row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-
-  const svgEl = document.getElementById(`svgPart${num}`);
-  if (svgEl) {
-    document.querySelectorAll('.svg-part-group').forEach(el => el.style.opacity = '0.3');
-    svgEl.style.opacity = '1';
-    svgEl.style.filter = 'drop-shadow(0 0 12px rgba(0,170,255,0.8))';
   }
 }
 

@@ -87,10 +87,13 @@ public class MainController {
             }
             Integer year = null;
             try { year = Integer.parseInt(info.getYear()); } catch (NumberFormatException ignored) {}
-            String model = (info.getEngineType() != null && !"unknown".equals(info.getEngineType()))
-                    ? info.getEngineType() : info.getModel();
-            Long carId = catalogService.findMatchingCarId(model, year).orElse(1L);
-            return "redirect:/groups?vin=" + UriUtils.encode(vin, StandardCharsets.UTF_8) + "&carId=" + carId;
+            var carIdOpt = catalogService.findMatchingCarId(info.getModel(), year, info.getEngineDisplacement(), info.getFuelType());
+            if (carIdOpt.isEmpty()) {
+                return "redirect:/?error=" + UriUtils.encode(
+                    "Автомобилът " + info.getMake() + " " + info.getModel() + " " + info.getYear() + " не е намерен в каталога.",
+                    StandardCharsets.UTF_8);
+            }
+            return "redirect:/groups?vin=" + UriUtils.encode(vin, StandardCharsets.UTF_8) + "&carId=" + carIdOpt.get();
         }
         return "redirect:/?error=" + UriUtils.encode(info.getErrorMessage(), StandardCharsets.UTF_8);
     }

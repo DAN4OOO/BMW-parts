@@ -33,8 +33,8 @@ public class ApiController {
                 return ResponseEntity.notFound().build();
             }
             Integer year = parseYear(info.getYear());
-            String model = resolveModel(info);
-            Long carId = catalogService.findMatchingCarId(model, year).orElse(1L);
+            Long carId = catalogService.findMatchingCarId(info.getModel(), year, info.getEngineDisplacement(), info.getFuelType()).orElse(null);
+            if (carId == null) return ResponseEntity.notFound().build();
             List<ComponentGroup> components = catalogService.getAllComponentsByCarId(carId);
             if (components.isEmpty()) {
                 return ResponseEntity.notFound().build();
@@ -59,7 +59,8 @@ public class ApiController {
             }
             Integer year = parseYear(info.getYear());
             String model = resolveModel(info);
-            Long carId = catalogService.findMatchingCarId(model, year).orElse(1L);
+            Long carId = catalogService.findMatchingCarId(model, year, info.getEngineDisplacement(), info.getFuelType()).orElse(null);
+            if (carId == null) return ResponseEntity.notFound().build();
             var componentOpt = catalogService.getComponentDetail(componentCode, carId);
             if (componentOpt.isEmpty()) {
                 return ResponseEntity.notFound().build();
