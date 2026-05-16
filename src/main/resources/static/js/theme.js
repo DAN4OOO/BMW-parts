@@ -17,24 +17,16 @@
         function initTheme() {
         const savedTheme = localStorage.getItem('theme') || 'dark';
         updateThemeButtons(savedTheme);
-        
-                updateDiagramTooltip(savedTheme);
     }
 
         window.setTheme = function(theme) {
         const html = document.documentElement;
-        
-                html.removeAttribute('data-theme');
-        
-                if (theme !== 'dark') {
+        html.removeAttribute('data-theme');
+        if (theme !== 'dark') {
             html.setAttribute('data-theme', theme);
         }
-        
-                localStorage.setItem('theme', theme);
-        
-                updateThemeButtons(theme);
-        
-                updateDiagramTooltip(theme);
+        localStorage.setItem('theme', theme);
+        updateThemeButtons(theme);
     };
 
         function updateThemeButtons(activeTheme) {
@@ -61,20 +53,7 @@
         });
     }
 
-        function updateDiagramTooltip(theme) {
-        const tooltip = document.querySelector('.diagram-tooltip');
-        if (tooltip) {
-            if (theme === 'light') {
-                tooltip.style.background = 'rgba(255, 255, 255, 0.95)';
-                tooltip.style.border = '1px solid var(--accent)';
-            } else {
-                tooltip.style.background = 'rgba(12,22,39,0.95)';
-                tooltip.style.border = '1px solid var(--accent)';
-            }
-        }
-    }
-
-        if (document.readyState === 'loading') {
+if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initTheme);
     } else {
         initTheme();
