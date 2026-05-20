@@ -38,6 +38,7 @@ function highlightFromTable(row) {
   if (legendItem) highlightPart(legendItem);
 }
 
+
 let lastScroll = 0;
 const navbar = document.querySelector('.navbar');
 if (navbar) {

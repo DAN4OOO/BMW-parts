@@ -98,6 +98,7 @@ public class MainController {
         return "redirect:/?error=" + UriUtils.encode(info.getErrorMessage(), StandardCharsets.UTF_8);
     }
 
+
     @GetMapping("/groups")
     public String groups(@RequestParam(required = false) String vin,
                          @RequestParam(required = false) Long carId,

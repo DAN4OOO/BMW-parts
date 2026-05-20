@@ -58,8 +58,7 @@ public class ApiController {
                 );
             }
             Integer year = parseYear(info.getYear());
-            String model = resolveModel(info);
-            Long carId = catalogService.findMatchingCarId(model, year, info.getEngineDisplacement(), info.getFuelType()).orElse(null);
+            Long carId = catalogService.findMatchingCarId(info.getModel(), year, info.getEngineDisplacement(), info.getFuelType()).orElse(null);
             if (carId == null) return ResponseEntity.notFound().build();
             var componentOpt = catalogService.getComponentDetail(componentCode, carId);
             if (componentOpt.isEmpty()) {
@@ -81,11 +80,4 @@ public class ApiController {
         }
     }
 
-    private String resolveModel(VehicleInfo info) {
-        String engine = info.getEngineType();
-        if (engine != null && !engine.isBlank() && !"unknown".equals(engine)) {
-            return engine;
-        }
-        return info.getModel();
-    }
 }

@@ -94,6 +94,37 @@ img { max-width: 100%; display: block; }
   background: rgba(255,255,255,0.92);
 }
 
+.nav-hist-btns {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.nav-hist-btn {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px;
+  color: var(--text-sec);
+  font-size: 1rem;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.nav-hist-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent-light);
+  background: rgba(0,112,193,0.1);
+}
+
+[data-theme="light"] .nav-hist-btn {
+  border-color: rgba(0,0,0,0.15);
+}
+
 .nav-inner {
   max-width: 1400px;
   margin: 0 auto;
@@ -587,7 +618,7 @@ img { max-width: 100%; display: block; }
   font-size: 1.15rem;
   font-weight: 700;
   letter-spacing: 2px;
-  color: #fff;
+  color: var(--text-primary);
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
