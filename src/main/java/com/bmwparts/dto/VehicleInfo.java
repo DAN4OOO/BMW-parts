@@ -18,7 +18,6 @@ public class VehicleInfo {
     private String transmissionStyle;
     private String numberOfCylinders;
     private String plant;
-    private String errorCode;
     private String errorMessage;
     private boolean valid;
 }
